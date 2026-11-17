@@ -58,6 +58,26 @@ with st.sidebar:
 rows = rows.assign(재점검=rows["rank"] <= cap, 위험=rows["prob"].ge(thr).map({True: "높음", False: "-"}), **{"확률(%)": (rows["prob"] * 100).round(1)})
 
 
+def _save_result(period):
+    """저장 버튼 콜백. 화면을 다시 그리기 전에 실행되어 저장 직후의 기록으로 드롭다운 · 현황이 그려진다.
+    결과 안내는 session_state['inspect_msg']에 남긴다."""
+    ss, pw = st.session_state, store.write_password()
+    if pw and not hmac.compare_digest(str(ss.get("f_pwd", "")).encode(), pw.encode()):
+        ss["inspect_msg"] = ("error", "쓰기 비밀번호가 맞지 않습니다.")
+        return
+    try:
+        conn, eid = store.connect(), ss["f_drone"]
+        before = int((store.list_results(conn, period)["equipment_id"] == eid).sum())
+        new_id = store.add_result(conn, period, eid, ss["f_day"], ss["f_res"], ss.get("f_crew", ""), ss.get("f_note", ""))
+        msg = f"저장했습니다. (번호 {new_id}, {eid}, {ss['f_res']})"
+        if before:
+            msg += f" {eid}의 {before + 1}번째 기록이라 '점검한 드론' 수는 그대로입니다."
+        ss["inspect_msg"] = ("success", msg)
+    except ValueError as e:
+        ss["inspect_msg"] = ("error", str(e))
+    except Exception as e:
+        ss["inspect_msg"] = ("error", f"저장하지 못했습니다. ({type(e).__name__})")
+
 
 def render_inspection(rows, period):
     """재점검 대상의 점검 결과를 Supabase에 기록하고 보여 준다."""
@@ -79,47 +99,46 @@ def render_inspection(rows, period):
         return
 
     targets = rows[rows["재점검"]]
-    label = {r["equipment_id"]: f"{r['equipment_id']} · {r['equipment_type']} · {r['unit_code']} · 확률 {r['확률(%)']}%"
+    rec = store.list_results(conn, period)                         # 저장 콜백이 먼저 실행되므로 저장 직후의 기록이다
+    visits = rec["equipment_id"].value_counts()                    # 드론별 기록 횟수
+    label = {r["equipment_id"]: (f"✔ 점검됨 ({int(visits[r['equipment_id']])}회) · " if r["equipment_id"] in visits.index else "")
+             + f"{r['equipment_id']} · {r['equipment_type']} · {r['unit_code']} · 확률 {r['확률(%)']}%"
              for _, r in targets.iterrows()}
+    options = sorted(label, key=lambda e: e in visits.index)       # 아직 점검하지 않은 드론을 먼저(각각 순위 순)
     pw = store.write_password()
-    top = st.container()                                           # 현황은 저장 처리 뒤에 채운다
 
-    with st.form("inspection_form", clear_on_submit=True):
-        st.write("**점검 결과 기록**")
-        eid = st.selectbox("드론", list(label), format_func=lambda e: label[e])
-        a, b = st.columns(2)
-        day = a.date_input("점검일", value=dt.date.today())
-        res = b.selectbox("점검 결과", store.RESULTS)
-        crew = st.text_input("점검반 (선택)", max_chars=store.MAX_CREW, placeholder="예: 정비1반")
-        note = st.text_area("메모 (선택)", max_chars=store.MAX_NOTE)
-        st.caption("개인 이름 · 실제 부대 정보 · 연락처는 입력하지 마세요. 교육용 가상 데이터입니다.")
-        pwd = st.text_input("쓰기 비밀번호", type="password") if pw else ""
-        saved = st.form_submit_button("저장")
-    if not pw:
-        st.caption("⚠ 쓰기 비밀번호가 설정되어 있지 않아 누구나 기록할 수 있습니다. 공개 앱이면 Secrets에 `write_password`를 넣으세요.")
-    if saved:
-        if pw and not hmac.compare_digest(pwd.encode(), pw.encode()):
-            st.error("쓰기 비밀번호가 맞지 않습니다.")
-        else:
-            try:
-                new_id = store.add_result(conn, period, eid, day, res, crew, note)
-                st.success(f"저장했습니다. (번호 {new_id}, {eid}, {res})")
-            except ValueError as e:
-                st.error(str(e))
-            except Exception as e:
-                st.error(f"저장하지 못했습니다. ({type(e).__name__})")
-
-    rec = store.list_results(conn, period)
     status.markdown(f":green[●] 저장소: **{store.backend_label()}** · 연결됨 · {period} 기록 {len(rec)}건")
     done = set(rec["equipment_id"]) & set(targets["equipment_id"])
-    with top:
-        c1, c2, c3 = st.columns(3)
-        c1.metric("점검 완료", f"{len(done)} / {len(targets)}대")
-        c2.metric("기록 건수", f"{len(rec)}건")
-        c3.metric("이상이 확인된 드론", f"{rec.loc[rec['result'] != '이상 없음', 'equipment_id'].nunique()}대")
-        st.progress(len(done) / max(len(targets), 1))
-        waiting = [e for e in label if e not in done]
-        st.caption("아직 점검 기록이 없는 대상: " + (", ".join(waiting) if waiting else "없음 (모두 기록됨)"))
+    latest = rec.sort_values(["inspected_on", "id"]).drop_duplicates("equipment_id", keep="last")   # 드론별 가장 최근 기록
+    c1, c2, c3 = st.columns(3)
+    c1.metric("점검한 드론", f"{len(done)} / {len(targets)}대",
+              help="드론 기준입니다. 같은 드론의 점검 결과를 여러 번 기록해도 1대로 셉니다.")
+    c2.metric("기록 건수", f"{len(rec)}건", help="점검 결과를 저장한 횟수입니다. 같은 드론을 다시 기록해도 늘어납니다.")
+    c3.metric("이상이 확인된 드론", f"{int((latest['result'] != '이상 없음').sum())}대",
+              help="각 드론의 가장 최근 기록이 '이상 없음'이 아닌 드론 수입니다.")
+    st.progress(len(done) / max(len(targets), 1))
+    waiting = [e for e in options if e not in done]
+    st.caption("아직 점검 기록이 없는 대상: " + (", ".join(waiting) if waiting else "없음 (모두 기록됨)")
+               + " · 점검한 드론은 드론 수 기준이라 같은 드론을 다시 기록하면 기록 건수만 늘어납니다.")
+
+    # 저장은 버튼 콜백(_save_result)이 화면을 다시 그리기 전에 처리한다. 그래서 저장 직후의 드롭다운 · 현황이 같은 실행에서 일관된다.
+    with st.form("inspection_form", clear_on_submit=True):
+        st.write("**점검 결과 기록**")
+        st.selectbox("드론 (아직 점검하지 않은 드론이 먼저 나옵니다)", options, format_func=lambda e: label[e], key="f_drone")
+        a, b = st.columns(2)
+        a.date_input("점검일", value=dt.date.today(), key="f_day")
+        b.selectbox("점검 결과", store.RESULTS, key="f_res")
+        st.text_input("점검반 (선택)", max_chars=store.MAX_CREW, placeholder="예: 정비1반", key="f_crew")
+        st.text_area("메모 (선택)", max_chars=store.MAX_NOTE, key="f_note")
+        st.caption("개인 이름 · 실제 부대 정보 · 연락처는 입력하지 마세요. 교육용 가상 데이터입니다.")
+        if pw:
+            st.text_input("쓰기 비밀번호", type="password", key="f_pwd")
+        st.form_submit_button("저장", on_click=_save_result, args=(period,))
+    msg = st.session_state.pop("inspect_msg", None)                # 콜백이 남긴 저장 결과 안내
+    if msg:
+        (st.success if msg[0] == "success" else st.error)(msg[1])
+    if not pw:
+        st.caption("⚠ 쓰기 비밀번호가 설정되어 있지 않아 누구나 기록할 수 있습니다. 공개 앱이면 Secrets에 `write_password`를 넣으세요.")
 
     st.subheader("기록 목록")
     if rec.empty:
