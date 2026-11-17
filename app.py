@@ -5,12 +5,17 @@
   reports/score_2026-01.json (python scripts/score.py) · artifacts/model_card.json · validation_by_month.csv
   threshold_cost.csv · feature_compare.csv (python scripts/train.py) · reports/*.md (python scripts/make_reports.py)
 데이터는 교육용 가상 데이터다.
+'점검 결과' 탭만 Supabase(Postgres)에 기록을 저장한다 (store.py, 연결 주소는 secrets에만 둔다).
 """
+import datetime as dt
+import hmac
 import json
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+
+import store
 
 ROOT = Path(__file__).resolve().parent
 REPORTS, ART = ROOT / "reports", ROOT / "artifacts"
@@ -48,7 +53,97 @@ with st.sidebar:
 
 rows = rows.assign(재점검=rows["rank"] <= cap, 위험=rows["prob"].ge(thr).map({True: "높음", False: "-"}), **{"확률(%)": (rows["prob"] * 100).round(1)})
 
-t1, t2, t3, t4, t5 = st.tabs(["① 재점검 목록", "② 검증 성능", "③ 위험 표시 기준", "④ 보고서", "⑤ 모델 정보"])
+
+
+def render_inspection(rows, period):
+    """재점검 대상의 점검 결과를 Supabase에 기록하고 보여 준다."""
+    st.write("재점검 대상 드론의 점검 결과를 기록합니다. 기록은 **Supabase(Postgres)** 에 저장되어 앱을 다시 시작해도 남습니다.")
+    if not store.configured():
+        st.info("저장소가 연결되어 있지 않습니다. 내 PC는 `.streamlit/secrets.toml`, 배포 앱은 Streamlit Secrets에 "
+                "`[connections.sql]`의 `url`을 넣으세요. 자세한 방법은 README.md에 있습니다.")
+        return
+    try:
+        conn = store.connect()
+        store.init_db()
+    except Exception as e:
+        st.error("점검 결과 저장소(Supabase)에 연결하지 못했습니다. 무료 프로젝트는 1주일 접속이 없으면 멈춥니다. "
+                 "Supabase 대시보드에서 다시 켠 뒤 새로고침하세요.")
+        st.caption(f"오류 종류: {type(e).__name__}")
+        return
+
+    targets = rows[rows["재점검"]]
+    label = {r["equipment_id"]: f"{r['equipment_id']} · {r['equipment_type']} · {r['unit_code']} · 확률 {r['확률(%)']}%"
+             for _, r in targets.iterrows()}
+    pw = store.write_password()
+    top = st.container()                                           # 현황은 저장 처리 뒤에 채운다
+
+    with st.form("inspection_form", clear_on_submit=True):
+        st.write("**점검 결과 기록**")
+        eid = st.selectbox("드론", list(label), format_func=lambda e: label[e])
+        a, b = st.columns(2)
+        day = a.date_input("점검일", value=dt.date.today())
+        res = b.selectbox("점검 결과", store.RESULTS)
+        crew = st.text_input("점검반 (선택)", max_chars=store.MAX_CREW, placeholder="예: 정비1반")
+        note = st.text_area("메모 (선택)", max_chars=store.MAX_NOTE)
+        st.caption("개인 이름 · 실제 부대 정보 · 연락처는 입력하지 마세요. 교육용 가상 데이터입니다.")
+        pwd = st.text_input("쓰기 비밀번호", type="password") if pw else ""
+        saved = st.form_submit_button("저장")
+    if not pw:
+        st.caption("⚠ 쓰기 비밀번호가 설정되어 있지 않아 누구나 기록할 수 있습니다. 공개 앱이면 Secrets에 `write_password`를 넣으세요.")
+    if saved:
+        if pw and not hmac.compare_digest(pwd.encode(), pw.encode()):
+            st.error("쓰기 비밀번호가 맞지 않습니다.")
+        else:
+            try:
+                new_id = store.add_result(conn, period, eid, day, res, crew, note)
+                st.success(f"저장했습니다. (번호 {new_id}, {eid}, {res})")
+            except ValueError as e:
+                st.error(str(e))
+            except Exception as e:
+                st.error(f"저장하지 못했습니다. ({type(e).__name__})")
+
+    rec = store.list_results(conn, period)
+    done = set(rec["equipment_id"]) & set(targets["equipment_id"])
+    with top:
+        c1, c2, c3 = st.columns(3)
+        c1.metric("점검 완료", f"{len(done)} / {len(targets)}대")
+        c2.metric("기록 건수", f"{len(rec)}건")
+        c3.metric("이상이 확인된 드론", f"{rec.loc[rec['result'] != '이상 없음', 'equipment_id'].nunique()}대")
+        st.progress(len(done) / max(len(targets), 1))
+        waiting = [e for e in label if e not in done]
+        st.caption("아직 점검 기록이 없는 대상: " + (", ".join(waiting) if waiting else "없음 (모두 기록됨)"))
+
+    st.subheader("기록 목록")
+    if rec.empty:
+        st.info("아직 기록이 없습니다. 위 양식으로 첫 점검 결과를 저장해 보세요.")
+        return
+    info = rows.set_index("equipment_id")
+    view = rec.assign(유형=rec["equipment_id"].map(info["equipment_type"]), 부대=rec["equipment_id"].map(info["unit_code"]),
+                      순위=rec["equipment_id"].map(info["rank"]), **{"확률(%)": rec["equipment_id"].map(info["확률(%)"])})
+    view = view.rename(columns={"id": "번호", "equipment_id": "드론", "inspected_on": "점검일", "result": "점검 결과",
+                                "crew": "점검반", "note": "메모", "created_at": "기록 시각"})
+    pick = st.multiselect("점검 결과 필터", store.RESULTS)
+    if pick:
+        view = view[view["점검 결과"].isin(pick)]
+    cols = ["번호", "점검일", "드론", "유형", "부대", "순위", "확률(%)", "점검 결과", "점검반", "메모", "기록 시각"]
+    st.dataframe(view[cols], hide_index=True, width="stretch")
+    st.download_button("점검 결과 받기 (CSV)", view[cols].to_csv(index=False).encode("utf-8-sig"),
+                       file_name="점검_결과.csv", mime="text/csv")
+    st.bar_chart(rec["result"].value_counts().reindex(store.RESULTS, fill_value=0))
+
+    with st.expander("잘못 기록한 항목 삭제"):
+        del_id = st.selectbox("삭제할 번호", list(rec["id"]),
+                              format_func=lambda i: f"{i} · {rec.loc[rec['id'] == i, 'equipment_id'].iloc[0]} · "
+                                                    f"{rec.loc[rec['id'] == i, 'result'].iloc[0]}")
+        pwd2 = st.text_input("쓰기 비밀번호", type="password", key="del_pw") if pw else ""
+        if st.button("삭제", disabled=not st.checkbox("이 기록을 삭제합니다")):
+            if pw and not hmac.compare_digest(pwd2.encode(), pw.encode()):
+                st.error("쓰기 비밀번호가 맞지 않습니다.")
+            else:
+                st.success(f"{store.delete_result(conn, del_id)}건을 삭제했습니다. 새로고침하면 목록에 반영됩니다.")
+
+
+t1, tI, t2, t3, t4, t5 = st.tabs(["① 재점검 목록", "② 점검 결과", "③ 검증 성능", "④ 위험 표시 기준", "⑤ 보고서", "⑥ 모델 정보"])
 
 with t1:
     c1, c2, c3 = st.columns(3)
@@ -78,6 +173,9 @@ with t1:
             .sort_values(["재점검 대상 수", "위험 높음 수", "부대"], ascending=[False, False, True]))
     st.dataframe(unit, hide_index=True, width="stretch")
     st.write(f"재점검 대상 합계: **{int(unit['재점검 대상 수'].sum())}대** ({len(unit)}개 부대, 정비 드론 {int(unit['정비 드론 수'].sum())}대 중)")
+
+with tI:
+    render_inspection(rows, score["period"])
 
 with t2:
     v = card["validation"]

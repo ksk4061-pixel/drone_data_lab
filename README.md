@@ -34,4 +34,20 @@ share.streamlit.io → **Create app** → **Deploy a public app from GitHub**
 | Main file path | `app.py` |
 | Python version | 3.12 (Advanced settings) |
 
-앱은 `reports/` · `artifacts/`의 결과 파일만 읽는다. 비밀 값(Secrets)은 필요 없다.
+앱의 분석 결과는 `reports/` · `artifacts/`의 파일을 읽는다. Secrets는 아래 '점검 결과 저장'을 쓸 때만 필요하다.
+
+## 점검 결과 저장 (Supabase)
+앱의 **② 점검 결과** 탭은 재점검 대상 드론의 점검 결과를 Supabase(Postgres)에 저장한다. 표(`inspection_results`)는 처음 접속할 때 자동으로 만들어지고 행 수준 보안(RLS)이 켜진다.
+
+1. supabase.com에서 프로젝트를 만든다(비밀번호는 영문 · 숫자 12자 이상). **Connect → Direct → Session pooler → URI**로 주소를 복사하고 `[YOUR-PASSWORD]`를 대괄호까지 지우고 비밀번호로 바꾼다. 포트는 5432여야 한다.
+2. 내 PC: `.streamlit/secrets.toml`에 넣는다 (`.gitignore`로 커밋되지 않음).
+3. 배포 앱: share.streamlit.io → 앱 **⋮ → Settings → Secrets**에 같은 내용을 붙여 넣고 **Save changes**를 누른다.
+```toml
+[connections.sql]
+url = "postgresql://postgres.<프로젝트ID>:<비밀번호>@<지역>.pooler.supabase.com:5432/postgres"
+
+# 선택: 공개 앱이면 꼭 넣는다. 넣으면 저장 · 삭제에 이 비밀번호가 필요하다.
+write_password = "<쓰기 비밀번호>"
+```
+- 연결 주소와 비밀번호는 `config.toml` · 코드 · 커밋에 쓰지 않는다. Streamlit은 연결 정보를 `secrets.toml`에서만 읽는다.
+- 무료 프로젝트는 1주일 접속이 없으면 멈춘다(데이터는 남는다). 이때 이 탭은 오류 안내를 보여 주고 나머지 탭은 정상 동작한다.

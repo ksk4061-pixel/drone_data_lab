@@ -6,6 +6,7 @@
 ## 폴더
 - `data/` — `drone_train.csv`(2023-01 ~ 2024-12, 정답 있음) · `drone_test.csv`(2025, 정답 없음) · `drone_this_month.csv`(2026-01, 정답 · availability_rate 없음)
 - `drone_lib.py` — 공통 함수. 모든 스크립트가 함께 쓴다
+- `app.py` · `store.py` — 결과 앱(Streamlit)과 점검 결과 저장소(Supabase). 저장소 코드는 `store.py`에만 둔다
 - `scripts/` — `eda.py`(데이터 살펴보기) · `train.py`(학습 · 검증 · 시험 예측) · `score.py`(이번 달 선정) · `make_reports.py`(보고서 생성)
 - `artifacts/` — 모델 `model_*.joblib`, 모델 정보 `model_card.json`, 검증 결과 CSV
 - `reports/` — 제출물 3개와 점수표(`score_2026-01.json`)
@@ -29,6 +30,7 @@
 - 한 번에 결과물 하나만 만든다. 요청하지 않은 그래프 · 파일을 만들지 않는다.
 - 코드를 고칠 때는 바꿀 파일과 이유를 먼저 말한다.
 - API 키 · 실제 부대 정보 · 개인정보를 파일에 쓰지 않는다.
+- DB 연결 주소 · 비밀번호는 `.streamlit/secrets.toml`(내 PC)과 Streamlit Secrets(배포)에만 쓴다. `config.toml` · 코드 · 커밋 · 채팅에 쓰지 않는다. `secrets.toml`은 `.gitignore`로 막혀 있다.
 
 ### 데이터 처리 (`python scripts/eda.py`로 확인한 값)
 - `clean()`은 원본 DataFrame을 바꾸지 않고 새 DataFrame을 돌려준다. 행을 지우지 않는다.
