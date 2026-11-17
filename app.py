@@ -140,6 +140,21 @@ def render_inspection(rows, period):
     if not pw:
         st.caption("⚠ 쓰기 비밀번호가 설정되어 있지 않아 누구나 기록할 수 있습니다. 공개 앱이면 Secrets에 `write_password`를 넣으세요.")
 
+    st.subheader("대상 드론별 점검 현황")
+    cnt, lat = rec.groupby("equipment_id").size(), latest.set_index("equipment_id")
+    stat = pd.DataFrame({
+        "순위": targets["rank"].to_numpy(), "드론": targets["equipment_id"].to_numpy(),
+        "유형": targets["equipment_type"].to_numpy(), "부대": targets["unit_code"].to_numpy(),
+        "확률(%)": targets["확률(%)"].to_numpy(),
+        "점검 상태": ["✔ 점검됨" if e in cnt.index else "대기" for e in targets["equipment_id"]],
+        "기록 횟수": [int(cnt.get(e, 0)) for e in targets["equipment_id"]],
+        "최근 점검일": [lat["inspected_on"].get(e, "-") for e in targets["equipment_id"]],
+        "최근 결과": [lat["result"].get(e, "-") for e in targets["equipment_id"]],
+    })
+    st.dataframe(stat, hide_index=True, width="stretch")
+    st.caption("같은 드론의 기록은 한 줄로 합쳐 '기록 횟수'로 보여 줍니다. 위 '점검한 드론'은 이 표에서 ✔ 점검됨인 드론 수입니다. "
+               "기록 하나하나는 아래 '기록 목록'에 있습니다.")
+
     st.subheader("기록 목록")
     if rec.empty:
         st.info("아직 기록이 없습니다. 위 양식으로 첫 점검 결과를 저장해 보세요.")
