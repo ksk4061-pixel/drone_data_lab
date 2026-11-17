@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모델 점검 A 보고서 (시간 피처 전수 재계산)</title>
+<style>
+  :root {
+    --page: #f1f1ee; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --grid: #e1e0d9; --axis: #c3c2b7;
+    --ring: rgba(11,11,11,.12); --tint: #edf3fb; --accent: #1f5fae; --code: #eeeeea;
+    --font: "Pretendard", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+      --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+    --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.7;
+    word-break: keep-all; overflow-wrap: anywhere;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+  }
+  .sheet { max-width: 960px; margin: 0 auto; background: var(--surface); border: 1px solid var(--ring); border-radius: 4px; padding: 48px 56px 40px; }
+  @media (max-width: 700px) { .sheet { padding: 28px 18px; } }
+  .kicker { font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: .02em; }
+  h1 { margin: 6px 0 16px; font-size: clamp(26px, 4.4vw, 34px); line-height: 1.3; font-weight: 700; text-wrap: balance; }
+  h2 { margin: 40px 0 10px; font-size: 22px; line-height: 1.4; font-weight: 700; padding-top: 8px; border-top: 1px solid var(--axis); }
+  h2 .no { color: var(--accent); margin-right: 8px; }
+  h3 { margin: 26px 0 8px; font-size: 17px; font-weight: 700; }
+  p { margin: 8px 0; }
+  ul { margin: 8px 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  ul.meta { list-style: none; padding: 12px 0; margin: 0; border-top: 1px solid var(--axis); border-bottom: 1px solid var(--grid); font-size: 14px; color: var(--ink2); }
+  ul.meta li { margin: 2px 0; }
+  .src { font-size: 13px; color: var(--ink2); list-style: none; margin-left: -20px; }
+  .lbl { font-weight: 700; margin-top: 18px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: .88em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+  .scroll { overflow-x: auto; margin: 10px 0 14px; border: 1px solid var(--grid); border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 520px; }
+  th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink2); padding: 8px 10px; background: var(--tint); border-bottom: 1px solid var(--axis); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td, th { overflow-wrap: break-word; }                   /* 표 칸: 짧은 단어는 꺾지 않고, 칸보다 긴 단어만 꺾는다 */
+  td.nw { white-space: nowrap; }
+  td:first-child, th:first-child { white-space: nowrap; overflow-wrap: normal; }
+  th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.pick td { background: var(--tint); font-weight: 600; }
+  nav.toc { margin: 18px 0 4px; padding: 12px 16px; background: var(--tint); border-radius: 6px; font-size: 14px; }
+  nav.toc b { display: block; margin-bottom: 4px; color: var(--ink2); font-size: 13px; }
+  nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+  @media (max-width: 700px) { nav.toc ol { columns: 1; } }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; padding: 0; font-size: 11.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sheet { border: 0; padding: 0; max-width: none; }
+    h2 { break-after: avoid; margin-top: 22px; font-size: 15px; }
+    h3 { break-after: avoid; }
+    table { font-size: 10px; min-width: 0; } tr { break-inside: avoid; }
+    .scroll { overflow: visible; } nav.toc { display: none; }
+  }
+</style>
+<script>(function(){try{if(window.parent===window)return;var e=window.parent.document.querySelector('.stApp');if(!e)return;function f(){var m=getComputedStyle(e).backgroundColor.match(/[\d.]+/g);if(!m)return;var l=(.2126*m[0]+.7152*m[1]+.0722*m[2])/255;document.documentElement.setAttribute('data-theme',l<.5?'dark':'light')}f();setInterval(f,1000)}catch(x){}})();</script>
+</head>
+<body>
+<article class="sheet">
+<div class="kicker">모델 점검 · 드론 예측정비</div>
+<h1>모델 점검 A 보고서 (시간 피처 전수 재계산)</h1>
+<ul class="meta"><li>작성: AI 에이전트 초안 · 검토: 정비 담당자 (검토 전)</li><li>자료: 교육용 가상 데이터. 원본 기록 3개 파일(학습 · 시험 · 이번 달) 전체를 점검함</li><li>이 점검은 코드 · 모델을 고치지 않음. 결과만 보고함</li></ul>
+<nav class="toc" aria-label="목차"><b>목차</b><ol><li><a href="#s1">종합</a></li><li><a href="#s2">점검 기준과 판정</a></li><li><a href="#s3">표본 10건 손검산용 표</a></li><li><a href="#s4">한계</a></li><li><a href="#s5">숫자의 출처</a></li></ol></nav>
+<h2 id="s1"><span class="no">1</span>종합</h2>
+<ul><li>점검 5개 중 <strong>5개 통과</strong>. 전체 기록 3,693건의 시간 피처 6개(최근 30 · 90 · 365일 고장 수, 직전 고장 뒤 경과일, 예방정비 뒤 비행시간, 직전 정비 뒤 비행시간)를 원본 CSV에서 <code>drone_lib</code>와 따로 다시 세어 대조함</li><li>별도 코드는 pandas 없이 파이썬 기본(<code>csv</code> · <code>datetime</code>)만 사용함. 다만 <strong>피처의 정의</strong>(이번 정비 포함, 30 · 90 · 365일 ‘이하’)는 같은 해석으로 구현했으므로, 정의 자체가 업무에 맞는지는 사람이 판단해야 함</li><li class="src">출처: <code>python scripts/check_features.py</code> → <code>artifacts/check_features_summary.json</code></li></ul>
+<h2 id="s2"><span class="no">2</span>점검 기준과 판정</h2>
+<p>기준은 결과를 보기 전에 <code>scripts/check_features.py</code> 맨 위에 적어 둔 값임.</p>
+<div class="scroll"><table><thead><tr><th class="">번호</th><th class="">점검</th><th class="">합격 기준</th><th class="">결과</th><th class="">판정</th></tr></thead><tbody><tr><td class="nw">A1</td><td class="nw">전수 재계산 대조</td><td class="">전체 기록의 시간 피처 6개가 모두 일치</td><td class="">3,693건 중 불일치 0건 (피처별 최근 30일 고장 수 0, 최근 90일 고장 수 0, 최근 365일 고장 수 0, 직전 고장 뒤 경과일 0, 예방정비 뒤 비행시간 0, 직전 정비 뒤 비행시간 0)</td><td class="nw">통과</td></tr><tr><td class="nw">A2</td><td class="nw">경계 사례</td><td class="">정확히 30 · 90 · 365일 전 고장 기록, 하루 바깥 기록 모두 일치</td><td class="">경계 160건 중 불일치 0 · 하루 바깥 130건 중 불일치 0</td><td class="nw">통과</td></tr><tr><td class="nw">A3</td><td class="">파일 경계(학습 → 시험 → 이번 달)</td><td class="">앞 파일 기록과 이어서 계산한 행 모두 일치</td><td class="">시험 · 이번 달 1,347건 중 불일치 0건</td><td class="nw">통과</td></tr><tr><td class="nw">A4</td><td class="nw">미래 기록 비의존</td><td class="">날짜 이후 기록을 지워도 그 날짜까지의 피처가 변하지 않음</td><td class="">2024-06-30 이후 삭제: 1,703건 중 변한 것 0건 · 2025-06-30 이후 삭제: 2,971건 중 변한 것 0건</td><td class="nw">통과</td></tr><tr><td class="nw">A5</td><td class="nw">이번 달 대상 20대 근거</td><td class="">20대의 피처가 재계산과 일치</td><td class="nw">20대 중 불일치 0대</td><td class="nw">통과</td></tr></tbody></table></div>
+<h2 id="s3"><span class="no">3</span>표본 10건 손검산용 표</h2>
+<p>대상 상위 5대(이번 달 최근 기록)와 전체 기록에서 임의로 뽑은 5건(<code>seed=42</code>)임. 값은 ‘최근 30일 / 90일 / 365일 고장 수 · 직전 고장 뒤 경과일 · 예방정비 뒤 비행시간 · 직전 정비 뒤 비행시간’ 순서임. 원본 기록에서 직접 세어 보려면 앱의 ‘⑧ 점검 A’ 탭에서 근거 기록을 볼 수 있음.</p>
+<div class="scroll"><table><thead><tr><th class="">드론</th><th class="n">정비일</th><th class="">정비 구분</th><th class="">파일</th><th class="">모델 값</th><th class="">재계산 값</th><th class="">일치</th></tr></thead><tbody><tr><td class="nw">DR-0115</td><td class="n nw">2026-01-24</td><td class="nw">긴급정비</td><td class="nw">month</td><td class="">6 / 11 / 48 · 0일 · 12.9h · 1.4h</td><td class="">6 / 11 / 48 · 0일 · 12.9h · 1.4h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0017</td><td class="n nw">2026-01-29</td><td class="nw">예방정비</td><td class="nw">month</td><td class="">3 / 4 / 15 · 1일 · 0h · 2h</td><td class="">3 / 4 / 15 · 1일 · 0.0h · 2.0h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0038</td><td class="n nw">2026-01-22</td><td class="nw">사후정비</td><td class="nw">month</td><td class="">4 / 5 / 8 · 0일 · 57h · 13.8h</td><td class="">4 / 5 / 8 · 0일 · 57.0h · 13.8h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0100</td><td class="n nw">2026-01-02</td><td class="nw">사후정비</td><td class="nw">month</td><td class="">2 / 3 / 4 · 0일 · 13.8h · 13.8h</td><td class="">2 / 3 / 4 · 0일 · 13.8h · 13.8h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0046</td><td class="n nw">2026-01-30</td><td class="nw">사후정비</td><td class="nw">month</td><td class="">3 / 4 / 8 · 0일 · 92.4h · 5.8h</td><td class="">3 / 4 / 8 · 0일 · 92.4h · 5.8h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0106</td><td class="n nw">2024-11-16</td><td class="nw">사후정비</td><td class="nw">train</td><td class="">1 / 1 / 2 · 0일 · 10.9h · 10.9h</td><td class="">1 / 1 / 2 · 0일 · 10.9h · 10.9h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0019</td><td class="n nw">2023-12-09</td><td class="nw">예방정비</td><td class="nw">train</td><td class="">0 / 0 / 0 · 없음일 · 0h · 83.9h</td><td class="">0 / 0 / 0 · 없음일 · 0.0h · 83.9h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0005</td><td class="n nw">2024-01-24</td><td class="nw">예방정비</td><td class="nw">train</td><td class="">1 / 1 / 1 · 18일 · 0h · 20.1h</td><td class="">1 / 1 / 1 · 18일 · 0.0h · 20.1h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0117</td><td class="n nw">2023-08-09</td><td class="nw">예방정비</td><td class="nw">train</td><td class="">0 / 0 / 0 · 없음일 · 0h · 105.3h</td><td class="">0 / 0 / 0 · 없음일 · 0.0h · 105.3h</td><td class="nw">일치</td></tr><tr><td class="nw">DR-0046</td><td class="n nw">2025-04-23</td><td class="nw">예방정비</td><td class="nw">test</td><td class="">0 / 7 / 26 · 40일 · 0h · 67.4h</td><td class="">0 / 7 / 26 · 40일 · 0.0h · 67.4h</td><td class="nw">일치</td></tr></tbody></table></div>
+<h2 id="s4"><span class="no">4</span>한계</h2>
+<ul><li>같은 사람(AI)이 같은 정의로 구현한 것을 다시 센 것이므로 <strong>구현 오류</strong>는 잡지만 <strong>정의 해석 오류</strong>는 잡지 못함. 예를 들어 ‘이번 정비를 고장 수에 포함하는 것’이 옳은지는 별개의 판단임</li><li>점검은 피처 계산에 한정됨. 모델이 이 피처로 잘 맞히는지는 <code>모델점검보고서</code>(B안)가 다룸</li><li>원본 <code>data/</code>는 저장소에 올리지 않았으므로 이 점검을 다시 실행하려면 데이터 3개가 필요함</li></ul>
+<h2 id="s5"><span class="no">5</span>숫자의 출처</h2>
+<div class="scroll"><table><thead><tr><th class="">항목</th><th class="">출처</th></tr></thead><tbody><tr><td class="nw">모든 점검 결과</td><td class=""><code>python scripts/check_features.py</code> → <code>artifacts/check_features_summary.json</code></td></tr><tr><td class="nw">대상 20대 근거 기록</td><td class=""><code>artifacts/trace_targets.json</code></td></tr><tr><td class="nw">모델이 계산한 피처 값</td><td class=""><code>drone_lib.prepare()</code></td></tr></tbody></table></div>
+</article>
+</body>
+</html>

@@ -1,0 +1,311 @@
+{
+  "checks": [
+    {
+      "id": "A1",
+      "name": "전수 재계산 대조",
+      "criterion": "전체 기록의 시간 피처 6개가 모두 일치",
+      "result": "3,693건 중 불일치 0건 (피처별 최근 30일 고장 수 0, 최근 90일 고장 수 0, 최근 365일 고장 수 0, 직전 고장 뒤 경과일 0, 예방정비 뒤 비행시간 0, 직전 정비 뒤 비행시간 0)",
+      "verdict": "통과"
+    },
+    {
+      "id": "A2",
+      "name": "경계 사례",
+      "criterion": "정확히 30 · 90 · 365일 전 고장 기록, 하루 바깥 기록 모두 일치",
+      "result": "경계 160건 중 불일치 0 · 하루 바깥 130건 중 불일치 0",
+      "verdict": "통과"
+    },
+    {
+      "id": "A3",
+      "name": "파일 경계(학습 → 시험 → 이번 달)",
+      "criterion": "앞 파일 기록과 이어서 계산한 행 모두 일치",
+      "result": "시험 · 이번 달 1,347건 중 불일치 0건",
+      "verdict": "통과"
+    },
+    {
+      "id": "A4",
+      "name": "미래 기록 비의존",
+      "criterion": "날짜 이후 기록을 지워도 그 날짜까지의 피처가 변하지 않음",
+      "result": "2024-06-30 이후 삭제: 1,703건 중 변한 것 0건 · 2025-06-30 이후 삭제: 2,971건 중 변한 것 0건",
+      "verdict": "통과"
+    },
+    {
+      "id": "A5",
+      "name": "이번 달 대상 20대 근거",
+      "criterion": "20대의 피처가 재계산과 일치",
+      "result": "20대 중 불일치 0대",
+      "verdict": "통과"
+    }
+  ],
+  "rows": 3693,
+  "stats": {
+    "all": [
+      3693,
+      0
+    ],
+    "boundary": [
+      160,
+      0
+    ],
+    "outside": [
+      130,
+      0
+    ],
+    "nonTrain": [
+      1347,
+      0
+    ]
+  },
+  "per_feature_mismatch": {
+    "fail_count_30d": 0,
+    "fail_count_90d": 0,
+    "fail_count_365d": 0,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 0,
+    "hours_since_last_maintenance": 0
+  },
+  "mismatch_examples": [],
+  "future": [
+    {
+      "cut": "2024-06-30",
+      "rows": 1703,
+      "changed": 0
+    },
+    {
+      "cut": "2025-06-30",
+      "rows": 2971,
+      "changed": 0
+    }
+  ],
+  "samples": [
+    {
+      "id": "DR-0115",
+      "date": "2026-01-24",
+      "type": "긴급정비",
+      "src": "month",
+      "model": {
+        "fail_count_30d": 6,
+        "fail_count_90d": 11,
+        "fail_count_365d": 48,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 12.9,
+        "hours_since_last_maintenance": 1.4
+      },
+      "recount": {
+        "fail_count_30d": 6,
+        "fail_count_90d": 11,
+        "fail_count_365d": 48,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 12.9,
+        "hours_since_last_maintenance": 1.4
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0017",
+      "date": "2026-01-29",
+      "type": "예방정비",
+      "src": "month",
+      "model": {
+        "fail_count_30d": 3,
+        "fail_count_90d": 4,
+        "fail_count_365d": 15,
+        "days_since_last_failure": 1,
+        "hours_since_last_pm": 0,
+        "hours_since_last_maintenance": 2
+      },
+      "recount": {
+        "fail_count_30d": 3,
+        "fail_count_90d": 4,
+        "fail_count_365d": 15,
+        "days_since_last_failure": 1,
+        "hours_since_last_pm": 0.0,
+        "hours_since_last_maintenance": 2.0
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0038",
+      "date": "2026-01-22",
+      "type": "사후정비",
+      "src": "month",
+      "model": {
+        "fail_count_30d": 4,
+        "fail_count_90d": 5,
+        "fail_count_365d": 8,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 57,
+        "hours_since_last_maintenance": 13.8
+      },
+      "recount": {
+        "fail_count_30d": 4,
+        "fail_count_90d": 5,
+        "fail_count_365d": 8,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 57.0,
+        "hours_since_last_maintenance": 13.8
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0100",
+      "date": "2026-01-02",
+      "type": "사후정비",
+      "src": "month",
+      "model": {
+        "fail_count_30d": 2,
+        "fail_count_90d": 3,
+        "fail_count_365d": 4,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 13.8,
+        "hours_since_last_maintenance": 13.8
+      },
+      "recount": {
+        "fail_count_30d": 2,
+        "fail_count_90d": 3,
+        "fail_count_365d": 4,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 13.8,
+        "hours_since_last_maintenance": 13.8
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0046",
+      "date": "2026-01-30",
+      "type": "사후정비",
+      "src": "month",
+      "model": {
+        "fail_count_30d": 3,
+        "fail_count_90d": 4,
+        "fail_count_365d": 8,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 92.4,
+        "hours_since_last_maintenance": 5.8
+      },
+      "recount": {
+        "fail_count_30d": 3,
+        "fail_count_90d": 4,
+        "fail_count_365d": 8,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 92.4,
+        "hours_since_last_maintenance": 5.8
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0106",
+      "date": "2024-11-16",
+      "type": "사후정비",
+      "src": "train",
+      "model": {
+        "fail_count_30d": 1,
+        "fail_count_90d": 1,
+        "fail_count_365d": 2,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 10.9,
+        "hours_since_last_maintenance": 10.9
+      },
+      "recount": {
+        "fail_count_30d": 1,
+        "fail_count_90d": 1,
+        "fail_count_365d": 2,
+        "days_since_last_failure": 0,
+        "hours_since_last_pm": 10.9,
+        "hours_since_last_maintenance": 10.9
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0019",
+      "date": "2023-12-09",
+      "type": "예방정비",
+      "src": "train",
+      "model": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 0,
+        "fail_count_365d": 0,
+        "days_since_last_failure": null,
+        "hours_since_last_pm": 0,
+        "hours_since_last_maintenance": 83.9
+      },
+      "recount": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 0,
+        "fail_count_365d": 0,
+        "days_since_last_failure": null,
+        "hours_since_last_pm": 0.0,
+        "hours_since_last_maintenance": 83.9
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0005",
+      "date": "2024-01-24",
+      "type": "예방정비",
+      "src": "train",
+      "model": {
+        "fail_count_30d": 1,
+        "fail_count_90d": 1,
+        "fail_count_365d": 1,
+        "days_since_last_failure": 18,
+        "hours_since_last_pm": 0,
+        "hours_since_last_maintenance": 20.1
+      },
+      "recount": {
+        "fail_count_30d": 1,
+        "fail_count_90d": 1,
+        "fail_count_365d": 1,
+        "days_since_last_failure": 18,
+        "hours_since_last_pm": 0.0,
+        "hours_since_last_maintenance": 20.1
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0117",
+      "date": "2023-08-09",
+      "type": "예방정비",
+      "src": "train",
+      "model": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 0,
+        "fail_count_365d": 0,
+        "days_since_last_failure": null,
+        "hours_since_last_pm": 0,
+        "hours_since_last_maintenance": 105.3
+      },
+      "recount": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 0,
+        "fail_count_365d": 0,
+        "days_since_last_failure": null,
+        "hours_since_last_pm": 0.0,
+        "hours_since_last_maintenance": 105.3
+      },
+      "match": true
+    },
+    {
+      "id": "DR-0046",
+      "date": "2025-04-23",
+      "type": "예방정비",
+      "src": "test",
+      "model": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 7,
+        "fail_count_365d": 26,
+        "days_since_last_failure": 40,
+        "hours_since_last_pm": 0,
+        "hours_since_last_maintenance": 67.4
+      },
+      "recount": {
+        "fail_count_30d": 0,
+        "fail_count_90d": 7,
+        "fail_count_365d": 26,
+        "days_since_last_failure": 40,
+        "hours_since_last_pm": 0.0,
+        "hours_since_last_maintenance": 67.4
+      },
+      "match": true
+    }
+  ]
+}

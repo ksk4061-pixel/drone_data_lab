@@ -1,0 +1,2729 @@
+{
+ "period": "2026-01",
+ "labels": {
+  "equipment_type": "드론 유형",
+  "maintenance_type": "정비 구분",
+  "fault_category": "고장 유형",
+  "equipment_age_years": "경과연수",
+  "severity": "고장 심각도",
+  "downtime_hours": "운용중단 시간",
+  "repair_duration_hours": "수리 시간",
+  "parts_replaced_count": "교체 부품 수",
+  "maintenance_cost": "정비 비용",
+  "maintenance_success": "정비 성공 여부",
+  "days_since_last_maintenance": "직전 정비 뒤 경과일",
+  "is_first_maintenance": "첫 정비 여부",
+  "fail_count_30d": "최근 30일 고장 수",
+  "fail_count_90d": "최근 90일 고장 수",
+  "fail_count_365d": "최근 365일 고장 수",
+  "days_since_last_failure": "직전 고장 뒤 경과일",
+  "hours_since_last_pm": "예방정비 뒤 비행시간",
+  "hours_since_last_maintenance": "직전 정비 뒤 비행시간"
+ },
+ "drones": [
+  {
+   "rank": 1,
+   "equipment_id": "DR-0115",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-02",
+   "prob": 0.9629,
+   "date": "2026-01-24",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "모터",
+    "equipment_age_years": 6.7,
+    "severity": 5,
+    "downtime_hours": 32.6,
+    "repair_duration_hours": 21.4,
+    "parts_replaced_count": 6,
+    "maintenance_cost": 340,
+    "maintenance_success": 0,
+    "days_since_last_maintenance": 1,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 6,
+    "fail_count_90d": 11,
+    "fail_count_365d": 48,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 12.9,
+    "hours_since_last_maintenance": 1.4
+   },
+   "recount": {
+    "fail_count_30d": 6,
+    "fail_count_90d": 11,
+    "fail_count_365d": 48,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 12.9,
+    "hours_since_last_maintenance": 1.4
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-24",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-23",
+     "type": "사후정비",
+     "age_days": 1,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-17",
+     "type": "사후정비",
+     "age_days": 7,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-04",
+     "type": "사후정비",
+     "age_days": 20,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-31",
+     "type": "사후정비",
+     "age_days": 24,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-27",
+     "type": "긴급정비",
+     "age_days": 28,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-24",
+     "type": "긴급정비",
+     "age_days": 31,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-19",
+     "type": "긴급정비",
+     "age_days": 36,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-18",
+     "type": "사후정비",
+     "age_days": 37,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-04",
+     "type": "사후정비",
+     "age_days": 51,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-11-03",
+     "type": "긴급정비",
+     "age_days": 82,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-10-14",
+     "type": "사후정비",
+     "age_days": 102,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-08-21",
+     "type": "긴급정비",
+     "age_days": 156,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-08-10",
+     "type": "사후정비",
+     "age_days": 167,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-08-08",
+     "type": "사후정비",
+     "age_days": 169,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-08-02",
+     "type": "사후정비",
+     "age_days": 175,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-27",
+     "type": "사후정비",
+     "age_days": 181,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-25",
+     "type": "사후정비",
+     "age_days": 183,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-23",
+     "type": "사후정비",
+     "age_days": 185,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-21",
+     "type": "긴급정비",
+     "age_days": 187,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-12",
+     "type": "사후정비",
+     "age_days": 196,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-10",
+     "type": "사후정비",
+     "age_days": 198,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-07",
+     "type": "사후정비",
+     "age_days": 201,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-05",
+     "type": "사후정비",
+     "age_days": 203,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-02",
+     "type": "사후정비",
+     "age_days": 206,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-29",
+     "type": "사후정비",
+     "age_days": 209,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-05",
+     "type": "사후정비",
+     "age_days": 233,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-05-10",
+     "type": "사후정비",
+     "age_days": 259,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-05-05",
+     "type": "사후정비",
+     "age_days": 264,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-05-04",
+     "type": "사후정비",
+     "age_days": 265,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-20",
+     "type": "사후정비",
+     "age_days": 279,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-19",
+     "type": "긴급정비",
+     "age_days": 280,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-18",
+     "type": "긴급정비",
+     "age_days": 281,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-17",
+     "type": "긴급정비",
+     "age_days": 282,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-14",
+     "type": "긴급정비",
+     "age_days": 285,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-06",
+     "type": "긴급정비",
+     "age_days": 293,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-04-05",
+     "type": "사후정비",
+     "age_days": 294,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-16",
+     "type": "사후정비",
+     "age_days": 314,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-08",
+     "type": "사후정비",
+     "age_days": 322,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-03",
+     "type": "긴급정비",
+     "age_days": 327,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-28",
+     "type": "사후정비",
+     "age_days": 330,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-24",
+     "type": "사후정비",
+     "age_days": 334,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-23",
+     "type": "사후정비",
+     "age_days": 335,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-20",
+     "type": "사후정비",
+     "age_days": 338,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-15",
+     "type": "긴급정비",
+     "age_days": 343,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-05",
+     "type": "긴급정비",
+     "age_days": 353,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-03",
+     "type": "긴급정비",
+     "age_days": 355,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-01",
+     "type": "사후정비",
+     "age_days": 357,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-18",
+     "type": "사후정비",
+     "age_days": 371,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-10",
+     "type": "사후정비",
+     "age_days": 379,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-06",
+     "type": "사후정비",
+     "age_days": 383,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-01",
+     "type": "사후정비",
+     "age_days": 388,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-30",
+     "type": "사후정비",
+     "age_days": 390,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-25",
+     "type": "긴급정비",
+     "age_days": 395,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-22",
+     "type": "사후정비",
+     "age_days": 398,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-21",
+     "type": "긴급정비",
+     "age_days": 399,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-13",
+    "hours_since": 12.9
+   },
+   "prev": {
+    "date": "2026-01-23",
+    "hours_since": 1.4
+   },
+   "contrib": {
+    "equipment_type": 0.1247,
+    "maintenance_type": 0.0513,
+    "fault_category": 0.0257,
+    "equipment_age_years": 0.0948,
+    "severity": 0.0067,
+    "downtime_hours": 0.0498,
+    "repair_duration_hours": -0.009,
+    "parts_replaced_count": -0.0563,
+    "maintenance_cost": 0.0634,
+    "maintenance_success": 0.3646,
+    "days_since_last_maintenance": 0.1734,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.4991,
+    "fail_count_90d": 0.9624,
+    "fail_count_365d": 1.1531,
+    "days_since_last_failure": 1.0222,
+    "hours_since_last_pm": 0.0872,
+    "hours_since_last_maintenance": 0.2331
+   }
+  },
+  {
+   "rank": 2,
+   "equipment_id": "DR-0017",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-06",
+   "prob": 0.8823,
+   "date": "2026-01-29",
+   "type": "예방정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "예방정비",
+    "fault_category": "N/A",
+    "equipment_age_years": 6.1,
+    "severity": 0,
+    "downtime_hours": 0.6,
+    "repair_duration_hours": 0.4,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 24,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 1,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 3,
+    "fail_count_90d": 4,
+    "fail_count_365d": 15,
+    "days_since_last_failure": 1,
+    "hours_since_last_pm": 0,
+    "hours_since_last_maintenance": 2
+   },
+   "recount": {
+    "fail_count_30d": 3,
+    "fail_count_90d": 4,
+    "fail_count_365d": 15,
+    "days_since_last_failure": 1,
+    "hours_since_last_pm": 0.0,
+    "hours_since_last_maintenance": 2.0
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-28",
+     "type": "사후정비",
+     "age_days": 1,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-21",
+     "type": "긴급정비",
+     "age_days": 8,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-06",
+     "type": "사후정비",
+     "age_days": 23,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-10",
+     "type": "긴급정비",
+     "age_days": 50,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-09-18",
+     "type": "사후정비",
+     "age_days": 133,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-29",
+     "type": "사후정비",
+     "age_days": 214,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-21",
+     "type": "사후정비",
+     "age_days": 222,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-05-24",
+     "type": "사후정비",
+     "age_days": 250,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-30",
+     "type": "사후정비",
+     "age_days": 305,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-25",
+     "type": "사후정비",
+     "age_days": 338,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-23",
+     "type": "사후정비",
+     "age_days": 340,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-07",
+     "type": "사후정비",
+     "age_days": 356,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-05",
+     "type": "긴급정비",
+     "age_days": 358,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-01",
+     "type": "사후정비",
+     "age_days": 362,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-30",
+     "type": "긴급정비",
+     "age_days": 364,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-23",
+     "type": "사후정비",
+     "age_days": 371,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-21",
+     "type": "긴급정비",
+     "age_days": 373,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-18",
+     "type": "사후정비",
+     "age_days": 376,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-29",
+    "hours_since": 0.0
+   },
+   "prev": {
+    "date": "2026-01-28",
+    "hours_since": 2.0
+   },
+   "contrib": {
+    "equipment_type": -0.0135,
+    "maintenance_type": 0.0059,
+    "fault_category": 0.0118,
+    "equipment_age_years": 0.0278,
+    "severity": -0.0002,
+    "downtime_hours": -0.1599,
+    "repair_duration_hours": 0.0116,
+    "parts_replaced_count": 0.0466,
+    "maintenance_cost": -0.0187,
+    "maintenance_success": -0.0349,
+    "days_since_last_maintenance": 0.2518,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.401,
+    "fail_count_90d": 0.5859,
+    "fail_count_365d": 1.2654,
+    "days_since_last_failure": 0.9815,
+    "hours_since_last_pm": -0.0457,
+    "hours_since_last_maintenance": 0.2887
+   }
+  },
+  {
+   "rank": 3,
+   "equipment_id": "DR-0038",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-10",
+   "prob": 0.7967,
+   "date": "2026-01-22",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "센서",
+    "equipment_age_years": 5.6,
+    "severity": 2,
+    "downtime_hours": 5.2,
+    "repair_duration_hours": 3.9,
+    "parts_replaced_count": 4,
+    "maintenance_cost": 176,
+    "maintenance_success": 0,
+    "days_since_last_maintenance": 12,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 4,
+    "fail_count_90d": 5,
+    "fail_count_365d": 8,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 57,
+    "hours_since_last_maintenance": 13.8
+   },
+   "recount": {
+    "fail_count_30d": 4,
+    "fail_count_90d": 5,
+    "fail_count_365d": 8,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 57.0,
+    "hours_since_last_maintenance": 13.8
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-22",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-10",
+     "type": "사후정비",
+     "age_days": 12,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-05",
+     "type": "사후정비",
+     "age_days": 17,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-24",
+     "type": "긴급정비",
+     "age_days": 29,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-14",
+     "type": "사후정비",
+     "age_days": 39,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-10-11",
+     "type": "사후정비",
+     "age_days": 103,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-21",
+     "type": "사후정비",
+     "age_days": 185,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-27",
+     "type": "사후정비",
+     "age_days": 209,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-06",
+    "hours_since": 57.0
+   },
+   "prev": {
+    "date": "2026-01-10",
+    "hours_since": 13.8
+   },
+   "contrib": {
+    "equipment_type": -0.0241,
+    "maintenance_type": -0.0277,
+    "fault_category": -0.1159,
+    "equipment_age_years": 0.0566,
+    "severity": -0.0001,
+    "downtime_hours": 0.1388,
+    "repair_duration_hours": 0.0581,
+    "parts_replaced_count": -0.0588,
+    "maintenance_cost": 0.0505,
+    "maintenance_success": 0.659,
+    "days_since_last_maintenance": 0.1153,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.3411,
+    "fail_count_90d": 0.4932,
+    "fail_count_365d": 0.2208,
+    "days_since_last_failure": 0.9388,
+    "hours_since_last_pm": 0.1148,
+    "hours_since_last_maintenance": -0.0038
+   }
+  },
+  {
+   "rank": 4,
+   "equipment_id": "DR-0100",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-02",
+   "prob": 0.7635,
+   "date": "2026-01-02",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 6.2,
+    "severity": 3,
+    "downtime_hours": 11.9,
+    "repair_duration_hours": 6.3,
+    "parts_replaced_count": 4,
+    "maintenance_cost": 244,
+    "maintenance_success": 0,
+    "days_since_last_maintenance": 12,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 13.8,
+    "hours_since_last_maintenance": 13.8
+   },
+   "recount": {
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 13.8,
+    "hours_since_last_maintenance": 13.8
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-02",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-07",
+     "type": "사후정비",
+     "age_days": 26,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-10-22",
+     "type": "사후정비",
+     "age_days": 72,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-09-06",
+     "type": "사후정비",
+     "age_days": 118,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-21",
+    "hours_since": 13.8
+   },
+   "prev": {
+    "date": "2025-12-21",
+    "hours_since": 13.8
+   },
+   "contrib": {
+    "equipment_type": 0.1341,
+    "maintenance_type": -0.0277,
+    "fault_category": 0.0274,
+    "equipment_age_years": 0.0836,
+    "severity": -0.0001,
+    "downtime_hours": 0.1406,
+    "repair_duration_hours": 0.0437,
+    "parts_replaced_count": -0.0595,
+    "maintenance_cost": 0.0599,
+    "maintenance_success": 0.6356,
+    "days_since_last_maintenance": 0.1135,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.2448,
+    "fail_count_90d": 0.4521,
+    "fail_count_365d": -0.0347,
+    "days_since_last_failure": 0.8738,
+    "hours_since_last_pm": 0.0809,
+    "hours_since_last_maintenance": -0.0052
+   }
+  },
+  {
+   "rank": 5,
+   "equipment_id": "DR-0046",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-12",
+   "prob": 0.7617,
+   "date": "2026-01-30",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 8.4,
+    "severity": 2,
+    "downtime_hours": 6.7,
+    "repair_duration_hours": 2.2,
+    "parts_replaced_count": 1,
+    "maintenance_cost": 94,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 4,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 3,
+    "fail_count_90d": 4,
+    "fail_count_365d": 8,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 92.4,
+    "hours_since_last_maintenance": 5.8
+   },
+   "recount": {
+    "fail_count_30d": 3,
+    "fail_count_90d": 4,
+    "fail_count_365d": 8,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 92.4,
+    "hours_since_last_maintenance": 5.8
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-30",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-26",
+     "type": "긴급정비",
+     "age_days": 4,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-31",
+     "type": "긴급정비",
+     "age_days": 30,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-11-29",
+     "type": "사후정비",
+     "age_days": 62,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-03-14",
+     "type": "긴급정비",
+     "age_days": 322,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-07",
+     "type": "긴급정비",
+     "age_days": 329,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-09",
+     "type": "긴급정비",
+     "age_days": 355,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-07",
+     "type": "사후정비",
+     "age_days": 357,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-29",
+     "type": "사후정비",
+     "age_days": 366,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-27",
+     "type": "긴급정비",
+     "age_days": 368,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-24",
+     "type": "긴급정비",
+     "age_days": 371,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-19",
+     "type": "사후정비",
+     "age_days": 376,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-13",
+     "type": "사후정비",
+     "age_days": 382,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-10",
+     "type": "사후정비",
+     "age_days": 385,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-09",
+     "type": "사후정비",
+     "age_days": 386,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-31",
+     "type": "사후정비",
+     "age_days": 395,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-02",
+    "hours_since": 92.4
+   },
+   "prev": {
+    "date": "2026-01-26",
+    "hours_since": 5.8
+   },
+   "contrib": {
+    "equipment_type": -0.0028,
+    "maintenance_type": -0.0235,
+    "fault_category": 0.0242,
+    "equipment_age_years": 0.1126,
+    "severity": -0.0002,
+    "downtime_hours": 0.1002,
+    "repair_duration_hours": -0.0243,
+    "parts_replaced_count": -0.0608,
+    "maintenance_cost": -0.0613,
+    "maintenance_success": -0.0478,
+    "days_since_last_maintenance": 0.2352,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.3691,
+    "fail_count_90d": 0.5466,
+    "fail_count_365d": 0.2242,
+    "days_since_last_failure": 0.9022,
+    "hours_since_last_pm": 0.3846,
+    "hours_since_last_maintenance": 0.0749
+   }
+  },
+  {
+   "rank": 6,
+   "equipment_id": "DR-0018",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-10",
+   "prob": 0.5892,
+   "date": "2026-01-18",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "모터",
+    "equipment_age_years": 7,
+    "severity": 2,
+    "downtime_hours": 8,
+    "repair_duration_hours": 3.8,
+    "parts_replaced_count": 2,
+    "maintenance_cost": 143,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 3,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 3,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 10.1,
+    "hours_since_last_maintenance": 4.1
+   },
+   "recount": {
+    "fail_count_30d": 3,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 10.1,
+    "hours_since_last_maintenance": 4.1
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-18",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-15",
+     "type": "사후정비",
+     "age_days": 3,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-31",
+     "type": "긴급정비",
+     "age_days": 18,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-09-20",
+     "type": "긴급정비",
+     "age_days": 120,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-11",
+    "hours_since": 10.1
+   },
+   "prev": {
+    "date": "2026-01-15",
+    "hours_since": 4.1
+   },
+   "contrib": {
+    "equipment_type": -0.0099,
+    "maintenance_type": -0.0353,
+    "fault_category": 0.0406,
+    "equipment_age_years": 0.0471,
+    "severity": -0.0002,
+    "downtime_hours": 0.1135,
+    "repair_duration_hours": 0.0553,
+    "parts_replaced_count": -0.0542,
+    "maintenance_cost": 0.0484,
+    "maintenance_success": -0.051,
+    "days_since_last_maintenance": 0.2143,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.3163,
+    "fail_count_90d": 0.4768,
+    "fail_count_365d": -0.0511,
+    "days_since_last_failure": 0.8323,
+    "hours_since_last_pm": -0.0422,
+    "hours_since_last_maintenance": 0.051
+   }
+  },
+  {
+   "rank": 7,
+   "equipment_id": "DR-0061",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-04",
+   "prob": 0.5471,
+   "date": "2026-01-16",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "감시드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "기체",
+    "equipment_age_years": 6.5,
+    "severity": 4,
+    "downtime_hours": 56,
+    "repair_duration_hours": 26.6,
+    "parts_replaced_count": 3,
+    "maintenance_cost": 199,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 22,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 6,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 55,
+    "hours_since_last_maintenance": 34.7
+   },
+   "recount": {
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 6,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 55.0,
+    "hours_since_last_maintenance": 34.7
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-16",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-25",
+     "type": "사후정비",
+     "age_days": 22,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-03",
+     "type": "사후정비",
+     "age_days": 44,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-08-18",
+     "type": "사후정비",
+     "age_days": 151,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-19",
+     "type": "긴급정비",
+     "age_days": 181,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-05",
+     "type": "사후정비",
+     "age_days": 195,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-14",
+    "hours_since": 55.0
+   },
+   "prev": {
+    "date": "2025-12-25",
+    "hours_since": 34.7
+   },
+   "contrib": {
+    "equipment_type": 0.0106,
+    "maintenance_type": 0.063,
+    "fault_category": 0.01,
+    "equipment_age_years": 0.1704,
+    "severity": -0.0004,
+    "downtime_hours": 0.0457,
+    "repair_duration_hours": -0.0262,
+    "parts_replaced_count": -0.061,
+    "maintenance_cost": 0.0833,
+    "maintenance_success": -0.0595,
+    "days_since_last_maintenance": 0.0383,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.3121,
+    "fail_count_90d": 0.432,
+    "fail_count_365d": -0.0444,
+    "days_since_last_failure": 0.7893,
+    "hours_since_last_pm": 0.1143,
+    "hours_since_last_maintenance": -0.0975
+   }
+  },
+  {
+   "rank": 8,
+   "equipment_id": "DR-0113",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-11",
+   "prob": 0.5048,
+   "date": "2026-01-18",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 6.8,
+    "severity": 1,
+    "downtime_hours": 1.6,
+    "repair_duration_hours": 0.6,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 34,
+    "maintenance_success": 0,
+    "days_since_last_maintenance": 34,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 44.5,
+    "hours_since_last_maintenance": 44.5
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 44.5,
+    "hours_since_last_maintenance": 44.5
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-18",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-15",
+    "hours_since": 44.5
+   },
+   "prev": {
+    "date": "2025-12-15",
+    "hours_since": 44.5
+   },
+   "contrib": {
+    "equipment_type": 0.1026,
+    "maintenance_type": -0.0186,
+    "fault_category": 0.0186,
+    "equipment_age_years": 0.1038,
+    "severity": -0.0003,
+    "downtime_hours": -0.2078,
+    "repair_duration_hours": 0.0275,
+    "parts_replaced_count": 0.0545,
+    "maintenance_cost": -0.0329,
+    "maintenance_success": 0.7509,
+    "days_since_last_maintenance": 0.0898,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0051,
+    "fail_count_90d": -0.1941,
+    "fail_count_365d": -0.1783,
+    "days_since_last_failure": 0.9789,
+    "hours_since_last_pm": 0.1381,
+    "hours_since_last_maintenance": -0.0174
+   }
+  },
+  {
+   "rank": 9,
+   "equipment_id": "DR-0076",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-06",
+   "prob": 0.501,
+   "date": "2026-01-04",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "감시드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "센서",
+    "equipment_age_years": 5.7,
+    "severity": 3,
+    "downtime_hours": 13,
+    "repair_duration_hours": 5.2,
+    "parts_replaced_count": 5,
+    "maintenance_cost": 246,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 8,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 5,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 17.4,
+    "hours_since_last_maintenance": 17.4
+   },
+   "recount": {
+    "fail_count_30d": 2,
+    "fail_count_90d": 3,
+    "fail_count_365d": 5,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 17.4,
+    "hours_since_last_maintenance": 17.4
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-04",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-20",
+     "type": "긴급정비",
+     "age_days": 15,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-11-13",
+     "type": "사후정비",
+     "age_days": 52,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-06-09",
+     "type": "사후정비",
+     "age_days": 209,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-19",
+     "type": "사후정비",
+     "age_days": 319,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2024-12-06",
+     "type": "사후정비",
+     "age_days": 394,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-05",
+     "type": "사후정비",
+     "age_days": 395,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-27",
+    "hours_since": 17.4
+   },
+   "prev": {
+    "date": "2025-12-27",
+    "hours_since": 17.4
+   },
+   "contrib": {
+    "equipment_type": 0.0012,
+    "maintenance_type": -0.0233,
+    "fault_category": -0.1117,
+    "equipment_age_years": 0.0483,
+    "severity": -0.0004,
+    "downtime_hours": -0.0304,
+    "repair_duration_hours": 0.0385,
+    "parts_replaced_count": -0.0656,
+    "maintenance_cost": 0.0525,
+    "maintenance_success": -0.0554,
+    "days_since_last_maintenance": 0.1396,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.3108,
+    "fail_count_90d": 0.4681,
+    "fail_count_365d": -0.0108,
+    "days_since_last_failure": 0.8013,
+    "hours_since_last_pm": 0.0697,
+    "hours_since_last_maintenance": -0.0372
+   }
+  },
+  {
+   "rank": 10,
+   "equipment_id": "DR-0052",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-04",
+   "prob": 0.4482,
+   "date": "2026-01-06",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "감시드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "모터",
+    "equipment_age_years": 8,
+    "severity": 1,
+    "downtime_hours": 9.6,
+    "repair_duration_hours": 6.3,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 46,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 3,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 2,
+    "fail_count_90d": 2,
+    "fail_count_365d": 7,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 4,
+    "hours_since_last_maintenance": 4
+   },
+   "recount": {
+    "fail_count_30d": 2,
+    "fail_count_90d": 2,
+    "fail_count_365d": 7,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 4.0,
+    "hours_since_last_maintenance": 4.0
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-06",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-28",
+     "type": "사후정비",
+     "age_days": 9,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-09-23",
+     "type": "사후정비",
+     "age_days": 105,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-08-07",
+     "type": "사후정비",
+     "age_days": 152,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-18",
+     "type": "사후정비",
+     "age_days": 322,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-10",
+     "type": "사후정비",
+     "age_days": 330,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-04",
+     "type": "긴급정비",
+     "age_days": 336,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2024-12-27",
+     "type": "사후정비",
+     "age_days": 375,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-10",
+     "type": "사후정비",
+     "age_days": 392,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-08",
+     "type": "사후정비",
+     "age_days": 394,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-03",
+    "hours_since": 4.0
+   },
+   "prev": {
+    "date": "2026-01-03",
+    "hours_since": 4.0
+   },
+   "contrib": {
+    "equipment_type": 0.0106,
+    "maintenance_type": -0.0345,
+    "fault_category": 0.0451,
+    "equipment_age_years": 0.0738,
+    "severity": -0.0002,
+    "downtime_hours": 0.1098,
+    "repair_duration_hours": 0.0535,
+    "parts_replaced_count": 0.0578,
+    "maintenance_cost": -0.033,
+    "maintenance_success": -0.0484,
+    "days_since_last_maintenance": 0.2155,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.2929,
+    "fail_count_90d": -0.2285,
+    "fail_count_365d": 0.0927,
+    "days_since_last_failure": 0.8148,
+    "hours_since_last_pm": -0.0746,
+    "hours_since_last_maintenance": 0.0357
+   }
+  },
+  {
+   "rank": 11,
+   "equipment_id": "DR-0132",
+   "equipment_type": "교육용드론",
+   "unit_code": "UNIT-11",
+   "prob": 0.3944,
+   "date": "2026-01-21",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "교육용드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "모터",
+    "equipment_age_years": 7.8,
+    "severity": 5,
+    "downtime_hours": 38.2,
+    "repair_duration_hours": 26.3,
+    "parts_replaced_count": 7,
+    "maintenance_cost": 362,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 26,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 15.5,
+    "hours_since_last_maintenance": 15.5
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 3,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 15.5,
+    "hours_since_last_maintenance": 15.5
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-21",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-11-16",
+     "type": "사후정비",
+     "age_days": 66,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-10-24",
+     "type": "긴급정비",
+     "age_days": 89,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-10-15",
+     "type": "사후정비",
+     "age_days": 98,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-26",
+    "hours_since": 15.5
+   },
+   "prev": {
+    "date": "2025-12-26",
+    "hours_since": 15.5
+   },
+   "contrib": {
+    "equipment_type": -0.2214,
+    "maintenance_type": 0.0536,
+    "fault_category": 0.0372,
+    "equipment_age_years": 0.0793,
+    "severity": 0.0195,
+    "downtime_hours": 0.0548,
+    "repair_duration_hours": -0.0213,
+    "parts_replaced_count": -0.0656,
+    "maintenance_cost": 0.0713,
+    "maintenance_success": -0.0613,
+    "days_since_last_maintenance": 0.0366,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0351,
+    "fail_count_90d": 0.4492,
+    "fail_count_365d": -0.094,
+    "days_since_last_failure": 0.854,
+    "hours_since_last_pm": 0.0567,
+    "hours_since_last_maintenance": -0.0515
+   }
+  },
+  {
+   "rank": 12,
+   "equipment_id": "DR-0082",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-03",
+   "prob": 0.3693,
+   "date": "2026-01-18",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "감시드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 6.9,
+    "severity": 4,
+    "downtime_hours": 18.8,
+    "repair_duration_hours": 6,
+    "parts_replaced_count": 3,
+    "maintenance_cost": 262,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 42,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 3,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 73.3,
+    "hours_since_last_maintenance": 73.3
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 3,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 73.3,
+    "hours_since_last_maintenance": 73.3
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-18",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-08-04",
+     "type": "긴급정비",
+     "age_days": 167,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-04",
+     "type": "사후정비",
+     "age_days": 320,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-07",
+    "hours_since": 73.3
+   },
+   "prev": {
+    "date": "2025-12-07",
+    "hours_since": 73.3
+   },
+   "contrib": {
+    "equipment_type": -0.0097,
+    "maintenance_type": 0.0748,
+    "fault_category": 0.0323,
+    "equipment_age_years": 0.0587,
+    "severity": -0.0004,
+    "downtime_hours": 0.098,
+    "repair_duration_hours": 0.0601,
+    "parts_replaced_count": -0.0643,
+    "maintenance_cost": 0.0698,
+    "maintenance_success": -0.0671,
+    "days_since_last_maintenance": 0.0225,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0194,
+    "fail_count_90d": -0.2044,
+    "fail_count_365d": -0.0058,
+    "days_since_last_failure": 0.8178,
+    "hours_since_last_pm": 0.2642,
+    "hours_since_last_maintenance": -0.0712
+   }
+  },
+  {
+   "rank": 13,
+   "equipment_id": "DR-0074",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-05",
+   "prob": 0.3338,
+   "date": "2026-01-16",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "감시드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 7.8,
+    "severity": 3,
+    "downtime_hours": 7.3,
+    "repair_duration_hours": 3.2,
+    "parts_replaced_count": 3,
+    "maintenance_cost": 151,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 40,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 2,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 74,
+    "hours_since_last_maintenance": 70.2
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 2,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 74.0,
+    "hours_since_last_maintenance": 70.2
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-16",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-12-07",
+     "type": "사후정비",
+     "age_days": 40,
+     "in30": false,
+     "in90": true,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-04",
+    "hours_since": 74.0
+   },
+   "prev": {
+    "date": "2025-12-07",
+    "hours_since": 70.2
+   },
+   "contrib": {
+    "equipment_type": -0.001,
+    "maintenance_type": -0.0149,
+    "fault_category": 0.0238,
+    "equipment_age_years": 0.1098,
+    "severity": -0.0004,
+    "downtime_hours": 0.109,
+    "repair_duration_hours": 0.0673,
+    "parts_replaced_count": -0.0705,
+    "maintenance_cost": 0.0637,
+    "maintenance_success": -0.0694,
+    "days_since_last_maintenance": 0.0271,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0197,
+    "fail_count_90d": -0.2024,
+    "fail_count_365d": -0.1618,
+    "days_since_last_failure": 0.8252,
+    "hours_since_last_pm": 0.284,
+    "hours_since_last_maintenance": -0.0696
+   }
+  },
+  {
+   "rank": 14,
+   "equipment_id": "DR-0102",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-03",
+   "prob": 0.3295,
+   "date": "2026-01-16",
+   "type": "예방정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "예방정비",
+    "fault_category": "N/A",
+    "equipment_age_years": 3.6,
+    "severity": 0,
+    "downtime_hours": 0.7,
+    "repair_duration_hours": 0.3,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 16,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 4,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 7,
+    "days_since_last_failure": 4,
+    "hours_since_last_pm": 0,
+    "hours_since_last_maintenance": 4.3
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 7,
+    "days_since_last_failure": 4,
+    "hours_since_last_pm": 0.0,
+    "hours_since_last_maintenance": 4.3
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-12",
+     "type": "사후정비",
+     "age_days": 4,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-07-31",
+     "type": "사후정비",
+     "age_days": 169,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-22",
+     "type": "긴급정비",
+     "age_days": 178,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-07-11",
+     "type": "사후정비",
+     "age_days": 189,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-24",
+     "type": "사후정비",
+     "age_days": 206,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-05-13",
+     "type": "사후정비",
+     "age_days": 248,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-02-01",
+     "type": "긴급정비",
+     "age_days": 349,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-15",
+     "type": "긴급정비",
+     "age_days": 366,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-13",
+     "type": "사후정비",
+     "age_days": 368,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-10",
+     "type": "사후정비",
+     "age_days": 371,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-09",
+     "type": "긴급정비",
+     "age_days": 372,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2025-01-02",
+     "type": "사후정비",
+     "age_days": 379,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-29",
+     "type": "긴급정비",
+     "age_days": 383,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-21",
+     "type": "사후정비",
+     "age_days": 391,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-20",
+     "type": "사후정비",
+     "age_days": 392,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    },
+    {
+     "date": "2024-12-14",
+     "type": "긴급정비",
+     "age_days": 398,
+     "in30": false,
+     "in90": false,
+     "in365": false
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-16",
+    "hours_since": 0.0
+   },
+   "prev": {
+    "date": "2026-01-12",
+    "hours_since": 4.3
+   },
+   "contrib": {
+    "equipment_type": 0.1377,
+    "maintenance_type": 0.0067,
+    "fault_category": 0.0135,
+    "equipment_age_years": -0.069,
+    "severity": -0.0002,
+    "downtime_hours": -0.1927,
+    "repair_duration_hours": 0.0279,
+    "parts_replaced_count": 0.0702,
+    "maintenance_cost": -0.0146,
+    "maintenance_success": -0.0502,
+    "days_since_last_maintenance": 0.258,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0256,
+    "fail_count_90d": -0.2316,
+    "fail_count_365d": 0.0875,
+    "days_since_last_failure": 0.8757,
+    "hours_since_last_pm": -0.0459,
+    "hours_since_last_maintenance": 0.0331
+   }
+  },
+  {
+   "rank": 15,
+   "equipment_id": "DR-0092",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-01",
+   "prob": 0.3217,
+   "date": "2026-01-13",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "모터",
+    "equipment_age_years": 3.9,
+    "severity": 4,
+    "downtime_hours": 37.5,
+    "repair_duration_hours": 22.6,
+    "parts_replaced_count": 5,
+    "maintenance_cost": 236,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 18,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 17.7,
+    "hours_since_last_maintenance": 17.7
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 4,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 17.7,
+    "hours_since_last_maintenance": 17.7
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-13",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-08-19",
+     "type": "사후정비",
+     "age_days": 147,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-06-04",
+     "type": "사후정비",
+     "age_days": 223,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-01-31",
+     "type": "사후정비",
+     "age_days": 347,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-26",
+    "hours_since": 17.7
+   },
+   "prev": {
+    "date": "2025-12-26",
+    "hours_since": 17.7
+   },
+   "contrib": {
+    "equipment_type": 0.1564,
+    "maintenance_type": -0.0222,
+    "fault_category": 0.0409,
+    "equipment_age_years": 0.0227,
+    "severity": -0.0004,
+    "downtime_hours": 0.0662,
+    "repair_duration_hours": -0.0267,
+    "parts_replaced_count": -0.0702,
+    "maintenance_cost": 0.0798,
+    "maintenance_success": -0.0664,
+    "days_since_last_maintenance": 0.0659,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0215,
+    "fail_count_90d": -0.2217,
+    "fail_count_365d": 0.036,
+    "days_since_last_failure": 0.784,
+    "hours_since_last_pm": 0.0663,
+    "hours_since_last_maintenance": -0.0438
+   }
+  },
+  {
+   "rank": 16,
+   "equipment_id": "DR-0005",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-10",
+   "prob": 0.3186,
+   "date": "2026-01-12",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "센서",
+    "equipment_age_years": 7.1,
+    "severity": 1,
+    "downtime_hours": 2.8,
+    "repair_duration_hours": 2.2,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 51,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 31,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 3,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 38.6,
+    "hours_since_last_maintenance": 38.6
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 3,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 38.6,
+    "hours_since_last_maintenance": 38.6
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-12",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-06-30",
+     "type": "사후정비",
+     "age_days": 196,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    },
+    {
+     "date": "2025-03-06",
+     "type": "사후정비",
+     "age_days": 312,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-12-12",
+    "hours_since": 38.6
+   },
+   "prev": {
+    "date": "2025-12-12",
+    "hours_since": 38.6
+   },
+   "contrib": {
+    "equipment_type": -0.03,
+    "maintenance_type": 0.0755,
+    "fault_category": -0.1116,
+    "equipment_age_years": 0.0334,
+    "severity": -0.0004,
+    "downtime_hours": 0.1339,
+    "repair_duration_hours": -0.0299,
+    "parts_replaced_count": 0.0576,
+    "maintenance_cost": 0.0072,
+    "maintenance_success": -0.0685,
+    "days_since_last_maintenance": 0.0602,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0139,
+    "fail_count_90d": -0.2023,
+    "fail_count_365d": 0.0389,
+    "days_since_last_failure": 0.864,
+    "hours_since_last_pm": 0.0741,
+    "hours_since_last_maintenance": -0.0575
+   }
+  },
+  {
+   "rank": 17,
+   "equipment_id": "DR-0035",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-09",
+   "prob": 0.3176,
+   "date": "2026-01-30",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 4.2,
+    "severity": 3,
+    "downtime_hours": 15.4,
+    "repair_duration_hours": 9.5,
+    "parts_replaced_count": 3,
+    "maintenance_cost": 104,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 28,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 2,
+    "fail_count_90d": 2,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 98.7,
+    "hours_since_last_maintenance": 40.9
+   },
+   "recount": {
+    "fail_count_30d": 2,
+    "fail_count_90d": 2,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 98.7,
+    "hours_since_last_maintenance": 40.9
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-30",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2026-01-02",
+     "type": "사후정비",
+     "age_days": 28,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-11-23",
+    "hours_since": 98.7
+   },
+   "prev": {
+    "date": "2026-01-02",
+    "hours_since": 40.9
+   },
+   "contrib": {
+    "equipment_type": -0.0574,
+    "maintenance_type": -0.0197,
+    "fault_category": 0.0333,
+    "equipment_age_years": 0.0465,
+    "severity": -0.0004,
+    "downtime_hours": 0.0481,
+    "repair_duration_hours": 0.0547,
+    "parts_replaced_count": -0.0709,
+    "maintenance_cost": 0.0378,
+    "maintenance_success": -0.0656,
+    "days_since_last_maintenance": 0.0438,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": 0.276,
+    "fail_count_90d": -0.2187,
+    "fail_count_365d": -0.2338,
+    "days_since_last_failure": 0.7498,
+    "hours_since_last_pm": 0.2856,
+    "hours_since_last_maintenance": -0.0833
+   }
+  },
+  {
+   "rank": 18,
+   "equipment_id": "DR-0101",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-03",
+   "prob": 0.3142,
+   "date": "2026-01-23",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "배터리",
+    "equipment_age_years": 4.9,
+    "severity": 5,
+    "downtime_hours": 39,
+    "repair_duration_hours": 17.7,
+    "parts_replaced_count": 5,
+    "maintenance_cost": 344,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 61,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 62.7,
+    "hours_since_last_maintenance": 62.7
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 2,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 62.7,
+    "hours_since_last_maintenance": 62.7
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-23",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    },
+    {
+     "date": "2025-09-15",
+     "type": "사후정비",
+     "age_days": 130,
+     "in30": false,
+     "in90": false,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2025-11-23",
+    "hours_since": 62.7
+   },
+   "prev": {
+    "date": "2025-11-23",
+    "hours_since": 62.7
+   },
+   "contrib": {
+    "equipment_type": 0.1619,
+    "maintenance_type": -0.0229,
+    "fault_category": 0.0292,
+    "equipment_age_years": 0.0798,
+    "severity": 0.0195,
+    "downtime_hours": 0.0963,
+    "repair_duration_hours": -0.0155,
+    "parts_replaced_count": -0.0806,
+    "maintenance_cost": 0.0744,
+    "maintenance_success": -0.0661,
+    "days_since_last_maintenance": 0.0153,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0208,
+    "fail_count_90d": -0.2059,
+    "fail_count_365d": -0.1646,
+    "days_since_last_failure": 0.8054,
+    "hours_since_last_pm": 0.1084,
+    "hours_since_last_maintenance": -0.0032
+   }
+  },
+  {
+   "rank": 19,
+   "equipment_id": "DR-0002",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-02",
+   "prob": 0.3074,
+   "date": "2026-01-29",
+   "type": "사후정비",
+   "features": {
+    "equipment_type": "정찰드론",
+    "maintenance_type": "사후정비",
+    "fault_category": "모터",
+    "equipment_age_years": 7.3,
+    "severity": 1,
+    "downtime_hours": 7.2,
+    "repair_duration_hours": 2.6,
+    "parts_replaced_count": 0,
+    "maintenance_cost": 47,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 3,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 4.1,
+    "hours_since_last_maintenance": 4.1
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 4.1,
+    "hours_since_last_maintenance": 4.1
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-29",
+     "type": "사후정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-26",
+    "hours_since": 4.1
+   },
+   "prev": {
+    "date": "2026-01-26",
+    "hours_since": 4.1
+   },
+   "contrib": {
+    "equipment_type": -0.0499,
+    "maintenance_type": -0.0345,
+    "fault_category": 0.039,
+    "equipment_age_years": 0.0833,
+    "severity": -0.0002,
+    "downtime_hours": 0.1075,
+    "repair_duration_hours": 0.0027,
+    "parts_replaced_count": 0.0606,
+    "maintenance_cost": -0.0183,
+    "maintenance_success": -0.054,
+    "days_since_last_maintenance": 0.2342,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0191,
+    "fail_count_90d": -0.2141,
+    "fail_count_365d": -0.1989,
+    "days_since_last_failure": 0.8669,
+    "hours_since_last_pm": -0.0763,
+    "hours_since_last_maintenance": 0.0498
+   }
+  },
+  {
+   "rank": 20,
+   "equipment_id": "DR-0087",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-04",
+   "prob": 0.3042,
+   "date": "2026-01-14",
+   "type": "긴급정비",
+   "features": {
+    "equipment_type": "수송드론",
+    "maintenance_type": "긴급정비",
+    "fault_category": "센서",
+    "equipment_age_years": 7.6,
+    "severity": 4,
+    "downtime_hours": 26.9,
+    "repair_duration_hours": 19.1,
+    "parts_replaced_count": 1,
+    "maintenance_cost": 194,
+    "maintenance_success": 1,
+    "days_since_last_maintenance": 12,
+    "is_first_maintenance": 0,
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 12,
+    "hours_since_last_maintenance": 12
+   },
+   "recount": {
+    "fail_count_30d": 1,
+    "fail_count_90d": 1,
+    "fail_count_365d": 1,
+    "days_since_last_failure": 0,
+    "hours_since_last_pm": 12.0,
+    "hours_since_last_maintenance": 12.0
+   },
+   "match": true,
+   "events": [
+    {
+     "date": "2026-01-14",
+     "type": "긴급정비",
+     "age_days": 0,
+     "in30": true,
+     "in90": true,
+     "in365": true
+    }
+   ],
+   "last_pm": {
+    "date": "2026-01-02",
+    "hours_since": 12.0
+   },
+   "prev": {
+    "date": "2026-01-02",
+    "hours_since": 12.0
+   },
+   "contrib": {
+    "equipment_type": 0.1328,
+    "maintenance_type": 0.0566,
+    "fault_category": -0.0958,
+    "equipment_age_years": 0.0894,
+    "severity": -0.0002,
+    "downtime_hours": 0.0351,
+    "repair_duration_hours": -0.0205,
+    "parts_replaced_count": -0.0587,
+    "maintenance_cost": 0.067,
+    "maintenance_success": -0.061,
+    "days_since_last_maintenance": 0.1325,
+    "is_first_maintenance": 0.0,
+    "fail_count_30d": -0.0199,
+    "fail_count_90d": -0.2235,
+    "fail_count_365d": -0.2159,
+    "days_since_last_failure": 0.8143,
+    "hours_since_last_pm": 0.0657,
+    "hours_since_last_maintenance": 0.0658
+   }
+  }
+ ]
+}

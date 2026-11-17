@@ -23,9 +23,11 @@ SCORE, CARD = REPORTS / "score_2026-01.json", ART / "model_card.json"
 BACK, THR, COMP = ART / "validation_by_month.csv", ART / "threshold_cost.csv", ART / "feature_compare.csv"
 COST_CHECK = 60                                   # 재점검 1대 비용(만원, 교육용 가정)
 REPORT_FILES = {"분석 보고서": "분석보고서", "2026-01 재점검 계획": "2026-01_드론_재점검계획",
-                "모델 점검 보고서": "모델점검보고서"}          # reports/ 안의 파일 이름(확장자 제외)
+                "모델 점검 B": "모델점검보고서", "모델 점검 A": "모델점검A보고서"}          # reports/ 안의 파일 이름(확장자 제외)
 CHECK = ART / "check_summary.json"                # python scripts/check_model.py 의 점검 결과
 chk0 = json.loads(CHECK.read_text(encoding="utf-8")) if CHECK.exists() else None
+CHECK_A, TRACE = ART / "check_features_summary.json", ART / "trace_targets.json"    # python scripts/check_features.py 의 점검 결과
+fs0 = json.loads(CHECK_A.read_text(encoding="utf-8")) if CHECK_A.exists() else None
 # 보고서 HTML을 앱 안에 넣을 때 바깥 여백 · 테두리를 없앤다 (보고서 자체의 디자인은 그대로)
 EMBED_CSS = ("<style>body{background:transparent!important;padding:0 4px!important}"
              ".sheet{border:0!important;max-width:none!important;background:transparent!important;padding:8px 28px 28px!important}</style>")
@@ -188,8 +190,8 @@ def render_inspection(rows, period):
                 st.success(f"{store.delete_result(conn, del_id)}건을 삭제했습니다. 새로고침하면 목록에 반영됩니다.")
 
 
-t1, tI, t2, t3, t4, t5, t7 = st.tabs(["① 재점검 목록", "② 점검 결과", "③ 검증 성능", "④ 위험 표시 기준", "⑤ 보고서", "⑥ 모델 정보",
-                                      "⑦ 모델 점검"])
+t1, tI, t2, t3, t4, t5, t7, t8 = st.tabs(["① 재점검 목록", "② 점검 결과", "③ 검증 성능", "④ 위험 표시 기준", "⑤ 보고서", "⑥ 모델 정보",
+                                          "⑦ 모델 점검 B", "⑧ 모델 점검 A"])
 
 with t1:
     c1, c2, c3 = st.columns(3)
@@ -270,7 +272,13 @@ with t4:
         k2.metric("위험 높음", f"{score['above_threshold']}대", f"기준 {score['threshold']:.2f} 이상", delta_color="off", delta_arrow="off")
         k3.metric("20대 초과", f"{score['above_threshold_over_capacity']}대", "다음 달 이월 검토", delta_color="off", delta_arrow="off")
         k4.metric("1위", f"{top1['prob'] * 100:.1f}%", top1["equipment_id"], delta_color="off", delta_arrow="off")
-    elif chk0:
+    elif pick == names[3] and fs0:
+        sa = fs0["stats"]
+        k1.metric("점검 통과", f"{sum(c['verdict'] == '통과' for c in fs0['checks'])} / {len(fs0['checks'])}")
+        k2.metric("전수 대조 기록", f"{fs0['rows']:,}건", f"불일치 {sa['all'][1]}건", delta_color="off", delta_arrow="off")
+        k3.metric("경계 사례", f"{sa['boundary'][0]}건", f"불일치 {sa['boundary'][1]}건", delta_color="off", delta_arrow="off")
+        k4.metric("파일 경계(시험 · 이번 달)", f"{sa['nonTrain'][0]:,}건", f"불일치 {sa['nonTrain'][1]}건", delta_color="off", delta_arrow="off")
+    elif pick == names[2] and chk0:
         tt = chk0["totals"]
         k1.metric("점검 통과", f"{sum(c['verdict'] == '통과' for c in chk0['checks'])} / {len(chk0['checks'])}")
         k2.metric("월 20대 적중 (모델)", int(tt["model"]), f"최대치 {int(tt['upper_bound'])}", delta_color="off", delta_arrow="off")
@@ -351,3 +359,57 @@ with t7:
             "month": "월", "train_rows": "학습 건수", "walk_forward_hits": "걸어가며 적중", "single_split_hits": "단일 분할 적중", "pr_auc": "그달 PR-AUC"}),
             hide_index=True, width="stretch")
         st.caption("각 달을 그 이전 데이터로만 학습한 모델로 예측한 결과입니다. 단일 분할(앱의 기본 모델)과 비슷하면 결과가 한 번의 분할 덕분이 아니라는 뜻입니다.")
+
+with t8:
+    if fs0 is None or not TRACE.exists():
+        st.info("점검 A 결과 파일이 없습니다. `python scripts/check_features.py`를 먼저 실행하세요(원본 data/ 필요).")
+    else:
+        tr = json.loads(TRACE.read_text(encoding="utf-8"))
+        st.subheader("A. 드론 한 대씩 근거 따라가기")
+        st.caption(f"원본 기록 {fs0['rows']:,}건 전체의 시간 피처를 별도 코드로 다시 세어 대조한 결과와, 재점검 대상 드론의 근거 기록입니다. "
+                   "이 점검은 코드를 고치지 않고 결과만 보여 줍니다. 피처의 '정의'(이번 정비 포함, 30 · 90 · 365일 이하)가 업무에 맞는지는 사람이 판단합니다.")
+        n_ok_a = sum(c["verdict"] == "통과" for c in fs0["checks"])
+        st.write(f"**종합: 점검 {len(fs0['checks'])}개 중 {n_ok_a}개 통과**")
+        for c in fs0["checks"]:
+            cc = {"통과": "green", "주의": "orange", "실패": "red"}[c["verdict"]]
+            st.markdown(f":{cc}[●] **{c['id']} {c['name']}** · :{cc}[{c['verdict']}]  \n{c['result']}")
+            st.caption(f"합격 기준: {c['criterion']}")
+
+        st.divider()
+        st.subheader("대상 드론의 근거 기록")
+        opts = {f"{x['rank']}위 · {x['equipment_id']} · 확률 {x['prob'] * 100:.1f}%": x for x in tr["drones"]}
+        d = opts[st.selectbox("드론 선택", list(opts))]
+        z1, z2, z3, z4 = st.columns(4)
+        z1.metric("재고장 확률", f"{d['prob'] * 100:.1f}%")
+        z2.metric("순위", f"{d['rank']}위", f"{d['equipment_type']} · {d['unit_code']}", delta_color="off", delta_arrow="off")
+        z3.metric("판단한 정비일", d["date"])
+        z4.metric("정비 구분", d["type"])
+
+        FE = ["fail_count_30d", "fail_count_90d", "fail_count_365d", "days_since_last_failure", "hours_since_last_pm", "hours_since_last_maintenance"]
+        show_v = lambda v: "없음" if v is None else v                                              # noqa: E731
+        agree = lambda a, b: (a is None and b is None) or (a is not None and b is not None and abs(float(a) - float(b)) <= 0.051)   # noqa: E731
+        st.write("**모델 입력값과 별도 재계산 비교**")
+        st.dataframe(pd.DataFrame({"피처": [tr["labels"][f] for f in FE], "모델 입력값": [show_v(d["features"][f]) for f in FE],
+                                   "별도 재계산": [show_v(d["recount"][f]) for f in FE],
+                                   "일치": ["✔" if agree(d["features"][f], d["recount"][f]) else "✖" for f in FE]}),
+                     hide_index=True, width="stretch")
+
+        st.write("**근거 기록 (이 드론의 고장 정비, 판단한 정비일 기준 400일 이내)**")
+        ev = pd.DataFrame(d["events"])
+        if ev.empty:
+            st.info("400일 이내 고장 정비 기록이 없습니다.")
+        else:
+            st.dataframe(pd.DataFrame({"정비일": ev["date"], "정비 구분": ev["type"], "며칠 전": ev["age_days"],
+                                       "30일 안": ev["in30"].map({True: "O", False: "-"}), "90일 안": ev["in90"].map({True: "O", False: "-"}),
+                                       "365일 안": ev["in365"].map({True: "O", False: "-"})}), hide_index=True, width="stretch")
+            st.caption(f"각 열의 O를 세면 위 표의 모델 입력값과 같습니다: 30일 안 {int(ev['in30'].sum())}건 · 90일 안 {int(ev['in90'].sum())}건 · "
+                       f"365일 안 {int(ev['in365'].sum())}건. 판단한 정비일 당일의 고장 정비도 포함합니다(0일 전).")
+        pm, pv = d["last_pm"], d["prev"]
+        st.caption(f"마지막 예방정비: {pm['date'] or '없음'}" + (f" (그 뒤 비행시간 {pm['hours_since']}h)" if pm["date"] else "")
+                   + f" · 직전 정비: {pv['date'] or '없음(첫 기록)'}" + (f" (그 뒤 비행시간 {pv['hours_since']}h)" if pv["date"] else ""))
+
+        st.write("**확률을 올리고 내린 요인 (기여도 상위 10)**")
+        cb = pd.DataFrame({"요인": [tr["labels"].get(k, k) for k in d["contrib"]], "기여도": list(d["contrib"].values())})
+        cb = cb.reindex(cb["기여도"].abs().sort_values(ascending=False).index).head(10)
+        st.bar_chart(cb, x="요인", y="기여도", horizontal=True, sort=False)
+        st.caption("오른쪽(+)은 재고장 확률을 올린 요인, 왼쪽(−)은 낮춘 요인입니다(로그 오즈 단위). 재점검 목록의 '위험을 올린 요인'은 이 중 위 3개입니다.")
