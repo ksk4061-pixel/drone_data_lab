@@ -1,0 +1,337 @@
+{
+  "size": {
+    "train": {
+      "rows": 2346,
+      "drones": 150,
+      "units": 12,
+      "from": "2023-01-01",
+      "to": "2024-12-31"
+    },
+    "test": {
+      "rows": 1241,
+      "drones": 150,
+      "units": 12,
+      "from": "2025-01-01",
+      "to": "2025-12-31"
+    },
+    "month": {
+      "rows": 106,
+      "drones": 81,
+      "units": 12,
+      "from": "2026-01-01",
+      "to": "2026-01-31"
+    }
+  },
+  "duplicate_drone_date": 0,
+  "month_rows_per_drone": {
+    "1": 63,
+    "2": 14,
+    "3": 2,
+    "4": 1,
+    "5": 1
+  },
+  "missing": {
+    "train": {
+      "fault_code": 1707,
+      "fault_category": 1707,
+      "days_since_last_maintenance": 150
+    },
+    "test": {
+      "fault_code": 876,
+      "fault_category": 876
+    },
+    "month": {
+      "fault_code": 62,
+      "fault_category": 62,
+      "availability_rate": 106
+    }
+  },
+  "fault_missing_by_type": {
+    "긴급정비": {
+      "missing": 0,
+      "rows": 171
+    },
+    "사후정비": {
+      "missing": 0,
+      "rows": 468
+    },
+    "예방정비": {
+      "missing": 1707,
+      "rows": 1707
+    }
+  },
+  "days_since_missing": {
+    "missing": 150,
+    "first_records": 150,
+    "all_first": true
+  },
+  "downtime_999": {
+    "train": 4,
+    "test": 0,
+    "month": 0
+  },
+  "downtime_next_max": 74.0,
+  "cost_over_1000": {
+    "rows": [
+      {
+        "equipment_id": "DR-0046",
+        "date": "2024-08-09",
+        "type": "사후정비",
+        "cost": 15000
+      },
+      {
+        "equipment_id": "DR-0054",
+        "date": "2023-03-23",
+        "type": "사후정비",
+        "cost": 16800
+      },
+      {
+        "equipment_id": "DR-0066",
+        "date": "2023-12-21",
+        "type": "사후정비",
+        "cost": 16200
+      },
+      {
+        "equipment_id": "DR-0088",
+        "date": "2023-11-03",
+        "type": "사후정비",
+        "cost": 18300
+      },
+      {
+        "equipment_id": "DR-0115",
+        "date": "2023-08-14",
+        "type": "사후정비",
+        "cost": 19000
+      }
+    ],
+    "by_file": {
+      "train": 5,
+      "test": 0,
+      "month": 0
+    },
+    "normal_max": 611.0
+  },
+  "cost_post_normal": {
+    "median": 109.0,
+    "p99": 334.55999999999995,
+    "max": 449.0
+  },
+  "cost_fixed_range": [
+    150.0,
+    190.0
+  ],
+  "consistency": {
+    "days_since_matches_date_gap": "3543/3543",
+    "cum_hours_decrease": 0,
+    "age_decrease": 0,
+    "test_drones_with_prior_records": 1.0,
+    "month_drones_with_prior_records": 1.0
+  },
+  "label_check": {
+    "match_rate": 0.9945,
+    "mismatch": 13,
+    "mismatch_months": {
+      "2024-12": 13
+    },
+    "mismatch_label_values": {
+      "1": 13
+    }
+  },
+  "base_rate": 0.2238,
+  "patterns": {
+    "equipment_type": {
+      "감시드론": {
+        "rate": 0.203,
+        "rows": 581
+      },
+      "교육용드론": {
+        "rate": 0.136,
+        "rows": 381
+      },
+      "수송드론": {
+        "rate": 0.318,
+        "rows": 601
+      },
+      "정찰드론": {
+        "rate": 0.209,
+        "rows": 783
+      }
+    },
+    "maintenance_type": {
+      "긴급정비": {
+        "rate": 0.643,
+        "rows": 171
+      },
+      "사후정비": {
+        "rate": 0.472,
+        "rows": 468
+      },
+      "예방정비": {
+        "rate": 0.114,
+        "rows": 1707
+      }
+    },
+    "fault_category": {
+      "N/A": {
+        "rate": 0.114,
+        "rows": 1707
+      },
+      "기체": {
+        "rate": 0.532,
+        "rows": 79
+      },
+      "모터": {
+        "rate": 0.605,
+        "rows": 147
+      },
+      "배터리": {
+        "rate": 0.539,
+        "rows": 180
+      },
+      "센서": {
+        "rate": 0.421,
+        "rows": 107
+      },
+      "통신": {
+        "rate": 0.46,
+        "rows": 126
+      }
+    },
+    "season": {
+      "가을": {
+        "rate": 0.237,
+        "rows": 596
+      },
+      "겨울": {
+        "rate": 0.258,
+        "rows": 593
+      },
+      "봄": {
+        "rate": 0.156,
+        "rows": 557
+      },
+      "여름": {
+        "rate": 0.24,
+        "rows": 600
+      }
+    },
+    "maintenance_success": {
+      "0": {
+        "rate": 0.695,
+        "rows": 131
+      },
+      "1": {
+        "rate": 0.196,
+        "rows": 2215
+      }
+    },
+    "severity": {
+      "0": {
+        "rate": 0.114,
+        "rows": 1707
+      },
+      "1": {
+        "rate": 0.276,
+        "rows": 98
+      },
+      "2": {
+        "rate": 0.514,
+        "rows": 173
+      },
+      "3": {
+        "rate": 0.524,
+        "rows": 164
+      },
+      "4": {
+        "rate": 0.602,
+        "rows": 113
+      },
+      "5": {
+        "rate": 0.67,
+        "rows": 91
+      }
+    },
+    "age_bin": {
+      "(0, 2]": {
+        "rate": 0.137,
+        "rows": 211
+      },
+      "(2, 4]": {
+        "rate": 0.158,
+        "rows": 795
+      },
+      "(4, 6]": {
+        "rate": 0.265,
+        "rows": 939
+      },
+      "(6, 8]": {
+        "rate": 0.302,
+        "rows": 401
+      }
+    },
+    "type_by_season": {
+      "감시드론": {
+        "가을": 0.188,
+        "겨울": 0.172,
+        "봄": 0.215,
+        "여름": 0.234
+      },
+      "교육용드론": {
+        "가을": 0.108,
+        "겨울": 0.104,
+        "봄": 0.141,
+        "여름": 0.19
+      },
+      "수송드론": {
+        "가을": 0.381,
+        "겨울": 0.4,
+        "봄": 0.147,
+        "여름": 0.32
+      },
+      "정찰드론": {
+        "가을": 0.216,
+        "겨울": 0.279,
+        "봄": 0.122,
+        "여름": 0.209
+      }
+    },
+    "fail_count_90d": {
+      "0": {
+        "rate": 0.081,
+        "rows": 1272
+      },
+      "1": {
+        "rate": 0.215,
+        "rows": 507
+      },
+      "2": {
+        "rate": 0.288,
+        "rows": 205
+      },
+      "3": {
+        "rate": 0.495,
+        "rows": 97
+      },
+      "4": {
+        "rate": 0.777,
+        "rows": 265
+      }
+    },
+    "availability_rate_mean": {
+      "재고장 1": 0.785,
+      "재고장 0": 0.959
+    }
+  },
+  "clean_check": {
+    "rows_before": 3693,
+    "rows_after": 3693,
+    "downtime_to_nan": 4,
+    "cost_divided": 5,
+    "fault_category_filled": 2645,
+    "fault_code_filled": 2645,
+    "is_first_maintenance": 150,
+    "cost_max_after": 611.0,
+    "downtime_max_after": 74.0,
+    "matches_agents_md": true
+  }
+}

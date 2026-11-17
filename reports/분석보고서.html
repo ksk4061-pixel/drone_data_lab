@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>드론 예측정비 분석 보고서</title>
+<style>
+  :root {
+    --page: #f1f1ee; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --grid: #e1e0d9; --axis: #c3c2b7;
+    --ring: rgba(11,11,11,.12); --tint: #edf3fb; --accent: #1f5fae; --code: #eeeeea;
+    --font: "Pretendard", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+      --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+    --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.7;
+    word-break: keep-all; overflow-wrap: anywhere;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+  }
+  .sheet { max-width: 960px; margin: 0 auto; background: var(--surface); border: 1px solid var(--ring); border-radius: 4px; padding: 48px 56px 40px; }
+  @media (max-width: 700px) { .sheet { padding: 28px 18px; } }
+  .kicker { font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: .02em; }
+  h1 { margin: 6px 0 16px; font-size: clamp(26px, 4.4vw, 34px); line-height: 1.3; font-weight: 700; text-wrap: balance; }
+  h2 { margin: 40px 0 10px; font-size: 22px; line-height: 1.4; font-weight: 700; padding-top: 8px; border-top: 1px solid var(--axis); }
+  h2 .no { color: var(--accent); margin-right: 8px; }
+  h3 { margin: 26px 0 8px; font-size: 17px; font-weight: 700; }
+  p { margin: 8px 0; }
+  ul { margin: 8px 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  ul.meta { list-style: none; padding: 12px 0; margin: 0; border-top: 1px solid var(--axis); border-bottom: 1px solid var(--grid); font-size: 14px; color: var(--ink2); }
+  ul.meta li { margin: 2px 0; }
+  .src { font-size: 13px; color: var(--ink2); list-style: none; margin-left: -20px; }
+  .lbl { font-weight: 700; margin-top: 18px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: .88em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+  .scroll { overflow-x: auto; margin: 10px 0 14px; border: 1px solid var(--grid); border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 520px; }
+  th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink2); padding: 8px 10px; background: var(--tint); border-bottom: 1px solid var(--axis); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child, th:first-child { white-space: nowrap; overflow-wrap: normal; }
+  th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.pick td { background: var(--tint); font-weight: 600; }
+  nav.toc { margin: 18px 0 4px; padding: 12px 16px; background: var(--tint); border-radius: 6px; font-size: 14px; }
+  nav.toc b { display: block; margin-bottom: 4px; color: var(--ink2); font-size: 13px; }
+  nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+  @media (max-width: 700px) { nav.toc ol { columns: 1; } }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; padding: 0; font-size: 11.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sheet { border: 0; padding: 0; max-width: none; }
+    h2 { break-after: avoid; margin-top: 22px; font-size: 15px; }
+    h3 { break-after: avoid; }
+    table { font-size: 10px; min-width: 0; } tr { break-inside: avoid; }
+    .scroll { overflow: visible; } nav.toc { display: none; }
+  }
+</style>
+</head>
+<body>
+<article class="sheet">
+<div class="kicker">분석 보고서 · 드론 예측정비</div>
+<h1>드론 예측정비 분석 보고서</h1>
+<ul class="meta"><li>작성: AI 에이전트 초안 · 검토: 정비 담당자 (검토 전)</li><li>자료: 교육용 가상 데이터 (<code>data/drone_train.csv</code> · <code>drone_test.csv</code> · <code>drone_this_month.csv</code>). 실제 부대 · 기종 정보 아님</li><li>규칙 원본: <code>AGENTS.md</code> · 요구사항 원본: <code>README.txt</code></li><li>숫자는 모두 직접 실행한 결과에서 가져옴. 각 절 끝에 나온 코드 · 파일을 적음</li></ul>
+<nav class="toc" aria-label="목차"><b>목차</b><ol><li><a href="#s1">분석 목적과 조건</a></li><li><a href="#s2">데이터 살펴보기</a></li><li><a href="#s3">데이터 처리 기준과 근거</a></li><li><a href="#s4">만든 피처와 넣지 않은 컬럼</a></li><li><a href="#s5">나눈 기간과 성능</a></li><li><a href="#s6">위험 표시 기준</a></li><li><a href="#s7">시험 기간 예측 제출</a></li><li><a href="#s8">모델의 한계 (<code>artifacts/model_card.json</code>의 limits)</a></li></ol></nav>
+<h2 id="s1"><span class="no">1</span>분석 목적과 조건</h2>
+<ul><li>정비를 마친 드론 가운데 <strong>30일 안에 다시 고장 날 드론</strong>을 미리 골라 2026-01 재점검 20대를 정함</li><li>예측 대상: <code>failure_within_30days</code> (정비 뒤 30일 안 사후정비 · 긴급정비가 있으면 1). 예측 시점: 정비를 마친 직후</li><li>업무 조건(<code>README.txt</code>): 월 재점검 20대. 놓친 재고장 1건 300만원, 재점검 1대 60만원(가정)</li></ul>
+<h2 id="s2"><span class="no">2</span>데이터 살펴보기</h2>
+<div class="scroll"><table><thead><tr><th class="">파일</th><th class="n">기간</th><th class="n">정비 기록</th><th class="n">드론</th><th class="n">부대</th></tr></thead><tbody><tr><td class="">drone_train.csv (학습, 정답 있음)</td><td class="n">2023-01-01 ~ 2024-12-31</td><td class="n">2,346</td><td class="n">150</td><td class="n">12</td></tr><tr><td class="">drone_test.csv (시험, 정답 없음)</td><td class="n">2025-01-01 ~ 2025-12-31</td><td class="n">1,241</td><td class="n">150</td><td class="n">12</td></tr><tr><td class="">drone_this_month.csv (이번 달)</td><td class="n">2026-01-01 ~ 2026-01-31</td><td class="n">106</td><td class="n">81</td><td class="n">12</td></tr></tbody></table></div>
+<ul><li>같은 드론 같은 날 중복 행: 0건. 이번 달 파일은 드론 81대에 정비 기록 106건으로, 드론당 정비 횟수는 1회 63대, 2회 14대, 3회 2대, 4회 1대, 5회 1대임</li><li>학습 데이터의 재고장 비율 22.4%</li><li class="src">출처: <code>python scripts/eda.py</code> → <code>artifacts/eda_summary.json</code></li></ul>
+<h3>2-1. 결측: 왜 비었는지 확인</h3>
+<div class="scroll"><table><thead><tr><th class="">컬럼</th><th class="n">학습</th><th class="n">시험</th><th class="n">이번 달</th><th class="">판단</th></tr></thead><tbody><tr><td class="">fault_code · fault_category</td><td class="n">1,707</td><td class="n">876</td><td class="n">62</td><td class="">전부 예방정비(고장 없음). 사후 · 긴급정비의 결측은 0건 (학습: 예방정비 1,707 / 1,707건 결측)</td></tr><tr><td class="">days_since_last_maintenance</td><td class="n">150</td><td class="n">0</td><td class="n">0</td><td class="">드론별 첫 정비 기록 (학습 첫 기록 150건이 모두 결측: True)</td></tr><tr><td class="">availability_rate</td><td class="n">0</td><td class="n">0</td><td class="n">106</td><td class="">이번 달 파일에는 컬럼 자체가 없음 → 모델에 쓸 수 없음</td></tr></tbody></table></div>
+<h3>2-2. 이상치</h3>
+<div class="scroll"><table><thead><tr><th class="">컬럼</th><th class="n">이상 값</th><th class="n">건수 (학습 / 시험 / 이번 달)</th><th class="">판단</th></tr></thead><tbody><tr><td class="">downtime_hours</td><td class="n">999.0</td><td class="n">4 / 0 / 0</td><td class="">미입력 표시값. 999를 뺀 최댓값이 74.0이라 값이 아님</td></tr><tr><td class="">maintenance_cost</td><td class="n">15,000 ~ 19,000</td><td class="n">5 / 0 / 0</td><td class="">자릿수 입력 오류(모두 사후정비). 정상 행 최댓값 611. 100으로 나누면 150 ~ 190으로 사후정비 정상 범위(중앙값 109, 99% 335, 최대 449)에 듦</td></tr></tbody></table></div>
+<ul><li>비용 오입력 행: DR-0046(2024-08-09, 15,000), DR-0054(2023-03-23, 16,800), DR-0066(2023-12-21, 16,200), DR-0088(2023-11-03, 18,300), DR-0115(2023-08-14, 19,000)</li><li>기록 일관성(학습 · 시험 · 이번 달을 이어서 확인): <code>days_since_last_maintenance</code>가 날짜 차이와 일치 3543/3543, 누적 비행시간 감소 0건, 경과연수 감소 0건, 시험 · 이번 달 드론 중 앞 기간 기록이 있는 비율 100% · 100%</li><li class="src">출처: <code>python scripts/eda.py</code></li></ul>
+<h3>2-3. 정답 정의 확인</h3>
+<ul><li>‘같은 드론에 이 정비 뒤 30일 안 사후 · 긴급정비가 있으면 1’을 학습 기록만으로 다시 만들면 정답과 99.45% 일치함. 어긋난 13건은 전부 2024-12 정비이고 정답이 1임. 2025년 1월 기록을 봐야 알 수 있는 재고장이어서임</li><li>그래서 학습 · 검증에서는 정답 확인 구간(30일)이 다음 기간에 걸치는 행을 뺌(5절)</li><li class="src">출처: <code>python scripts/eda.py</code></li></ul>
+<h3>2-4. 패턴 (학습 데이터)</h3>
+<div class="scroll"><table><thead><tr><th class="">구분</th><th class="">값</th><th class="n">재고장률</th><th class="n">건수</th></tr></thead><tbody><tr><td class="">드론 유형</td><td class="">감시드론</td><td class="n">20.3%</td><td class="n">581</td></tr><tr><td class="">드론 유형</td><td class="">교육용드론</td><td class="n">13.6%</td><td class="n">381</td></tr><tr><td class="">드론 유형</td><td class="">수송드론</td><td class="n">31.8%</td><td class="n">601</td></tr><tr><td class="">드론 유형</td><td class="">정찰드론</td><td class="n">20.9%</td><td class="n">783</td></tr><tr><td class="">정비 구분</td><td class="">긴급정비</td><td class="n">64.3%</td><td class="n">171</td></tr><tr><td class="">정비 구분</td><td class="">사후정비</td><td class="n">47.2%</td><td class="n">468</td></tr><tr><td class="">정비 구분</td><td class="">예방정비</td><td class="n">11.4%</td><td class="n">1,707</td></tr><tr><td class="">고장 유형</td><td class="">N/A</td><td class="n">11.4%</td><td class="n">1,707</td></tr><tr><td class="">고장 유형</td><td class="">기체</td><td class="n">53.2%</td><td class="n">79</td></tr><tr><td class="">고장 유형</td><td class="">모터</td><td class="n">60.5%</td><td class="n">147</td></tr><tr><td class="">고장 유형</td><td class="">배터리</td><td class="n">53.9%</td><td class="n">180</td></tr><tr><td class="">고장 유형</td><td class="">센서</td><td class="n">42.1%</td><td class="n">107</td></tr><tr><td class="">고장 유형</td><td class="">통신</td><td class="n">46.0%</td><td class="n">126</td></tr><tr><td class="">계절</td><td class="">가을</td><td class="n">23.7%</td><td class="n">596</td></tr><tr><td class="">계절</td><td class="">겨울</td><td class="n">25.8%</td><td class="n">593</td></tr><tr><td class="">계절</td><td class="">봄</td><td class="n">15.6%</td><td class="n">557</td></tr><tr><td class="">계절</td><td class="">여름</td><td class="n">24.0%</td><td class="n">600</td></tr><tr><td class="">정비 성공 여부</td><td class="">0 (실패)</td><td class="n">69.5%</td><td class="n">131</td></tr><tr><td class="">정비 성공 여부</td><td class="">1 (성공)</td><td class="n">19.6%</td><td class="n">2,215</td></tr><tr><td class="">경과연수</td><td class="">(0, 2]</td><td class="n">13.7%</td><td class="n">211</td></tr><tr><td class="">경과연수</td><td class="">(2, 4]</td><td class="n">15.8%</td><td class="n">795</td></tr><tr><td class="">경과연수</td><td class="">(4, 6]</td><td class="n">26.5%</td><td class="n">939</td></tr><tr><td class="">경과연수</td><td class="">(6, 8]</td><td class="n">30.2%</td><td class="n">401</td></tr><tr><td class="">최근 90일 고장 수</td><td class="">0</td><td class="n">8.1%</td><td class="n">1,272</td></tr><tr><td class="">최근 90일 고장 수</td><td class="">1</td><td class="n">21.5%</td><td class="n">507</td></tr><tr><td class="">최근 90일 고장 수</td><td class="">2</td><td class="n">28.8%</td><td class="n">205</td></tr><tr><td class="">최근 90일 고장 수</td><td class="">3</td><td class="n">49.5%</td><td class="n">97</td></tr><tr><td class="">최근 90일 고장 수</td><td class="">4 이상</td><td class="n">77.7%</td><td class="n">265</td></tr></tbody></table></div>
+<div class="scroll"><table><thead><tr><th class="">드론 유형</th><th class="n">봄</th><th class="n">여름</th><th class="n">가을</th><th class="n">겨울</th></tr></thead><tbody><tr><td class="">감시드론</td><td class="n">21.5%</td><td class="n">23.4%</td><td class="n">18.8%</td><td class="n">17.2%</td></tr><tr><td class="">교육용드론</td><td class="n">14.1%</td><td class="n">19.0%</td><td class="n">10.8%</td><td class="n">10.4%</td></tr><tr><td class="">수송드론</td><td class="n">14.7%</td><td class="n">32.0%</td><td class="n">38.1%</td><td class="n">40.0%</td></tr><tr><td class="">정찰드론</td><td class="n">12.2%</td><td class="n">20.9%</td><td class="n">21.6%</td><td class="n">27.9%</td></tr></tbody></table></div>
+<ul><li>드론 유형: 수송드론 31.8%로 가장 높고 교육용드론 13.6%로 가장 낮음</li><li>계절: 겨울 25.8%, 봄 15.6%. 유형별로는 수송드론이 봄 14.7%에서 겨울 40.0%까지 차이가 가장 큼</li><li>정비 구분 · 고장 유형: 예방정비(고장 없음) 11.4%에 비해 사후정비 47.2%, 긴급정비 64.3%. 정비가 실패한 경우 69.5% (성공 19.6%)</li><li>최근 90일 고장이 쌓일수록 재고장률이 단계적으로 올라감 (0건 8.1% → 4건 이상 77.7%)</li><li>그 달 가동률(<code>availability_rate</code>) 평균은 재고장 1인 정비 0.785, 0인 정비 0.959. 재고장 뒤에 낮아지는 결과 값이라 예측에 쓰면 안 됨</li><li class="src">출처: <code>python scripts/eda.py</code> → <code>artifacts/eda_summary.json</code></li></ul>
+<h2 id="s3"><span class="no">3</span>데이터 처리 기준과 근거</h2>
+<div class="scroll"><table><thead><tr><th class="">항목</th><th class="n">건수</th><th class="">처리</th><th class="">근거</th></tr></thead><tbody><tr><td class="">downtime_hours = 999</td><td class="n">4</td><td class="">결측(NaN)으로 바꿈. 평균 · 중앙값으로 채우지 않음</td><td class="">미입력 표시값. 평균으로 채우면 값을 지어내게 됨. 모델(LightGBM)이 결측을 처리</td></tr><tr><td class="">maintenance_cost &gt; 1,000</td><td class="n">5</td><td class="">100으로 나눔. 나눈 행은 <code>cost_fixed</code>=1로 표시</td><td class="">자릿수 입력 오류. 나눈 값이 사후정비 정상 범위에 듦</td></tr><tr><td class="">fault_category · fault_code 결측</td><td class="n">2,645</td><td class="">"N/A" 범주로 채움</td><td class="">전부 예방정비(고장 없음). 최빈값으로 채우면 없는 고장 유형이 생김. fault_code(40종)는 모델에 쓰지 않음</td></tr><tr><td class="">days_since_last_maintenance 결측</td><td class="n">150</td><td class="">비워 두고 <code>is_first_maintenance</code>(1/0) 열 추가</td><td class="">드론별 첫 정비. 0으로 채우면 방금 정비한 것처럼 보임</td></tr></tbody></table></div>
+<ul><li><strong>행을 지우지 않음.</strong> 처리 전 3,693건 → 처리 후 3,693건(학습 2,346 + 시험 1,241 + 이번 달 106). 건수 대조: <code>AGENTS.md</code>의 처리 기준과 일치 = True</li><li>처리 뒤 <code>downtime_hours</code> 최댓값 74.0, <code>maintenance_cost</code> 최댓값 611</li><li class="src">출처: <code>python scripts/eda.py</code> (<code>drone_lib.clean</code>)</li></ul>
+<h2 id="s4"><span class="no">4</span>만든 피처와 넣지 않은 컬럼</h2>
+<p>같은 드론의 <strong>그 정비일까지의 기록</strong>만 사용함(같은 날짜 포함, 이후 기록은 사용하지 않음). 시험 · 이번 달 피처는 학습 → 시험 → 이번 달 기록을 이어서 계산함.</p>
+<div class="scroll"><table><thead><tr><th class="">피처</th><th class="">정의</th></tr></thead><tbody><tr><td class="">최근 30 · 90 · 365일 고장 수</td><td class="">그 정비일 기준 최근 30 · 90 · 365일의 사후 · 긴급정비 수(이번 정비 포함)</td></tr><tr><td class="">직전 고장 뒤 경과일</td><td class="">직전 사후 · 긴급정비로부터 경과일 (고장 이력이 없으면 비움)</td></tr><tr><td class="">예방정비 뒤 비행시간</td><td class="">마지막 예방정비 이후 누적 비행시간 증가분</td></tr><tr><td class="">직전 정비 뒤 비행시간</td><td class="">직전 정비 이후 누적 비행시간 증가분 (첫 정비는 비움)</td></tr></tbody></table></div>
+<p>최종 피처 18개: 드론 유형, 정비 구분, 고장 유형, 경과연수, 고장 심각도, 운용중단 시간, 수리 시간, 교체 부품 수, 정비 비용, 정비 성공 여부, 직전 정비 뒤 경과일, 첫 정비 여부, 최근 30일 고장 수, 최근 90일 고장 수, 최근 365일 고장 수, 직전 고장 뒤 경과일, 예방정비 뒤 비행시간, 직전 정비 뒤 비행시간</p>
+<p class="lbl"><strong>넣지 않은 컬럼과 이유</strong></p>
+<div class="scroll"><table><thead><tr><th class="">컬럼</th><th class="">이유</th></tr></thead><tbody><tr><td class="">availability_rate</td><td class="">그 달 전체 가동률 — 예측 시점에는 알 수 없음(누수). 이번 달 파일에도 없음</td></tr><tr><td class="">fault_code</td><td class="">40종 — fault_category로 대신함</td></tr><tr><td class="">equipment_id · unit_code</td><td class="">식별자</td></tr><tr><td class="">maintenance_date</td><td class="">날짜 자체는 쓰지 않음(시간 피처만 사용)</td></tr><tr><td class="">cumulative_operating_hours</td><td class="">누적형 컬럼 — 시간이 지날수록 커져 시험 · 이번 달에서 학습 범위를 벗어남. 빼도 검증 성능 차이 없음(직전 정비 · 예방정비 뒤 비행시간으로 대신함)</td></tr><tr><td class="">fail_count_total</td><td class="">누적 고장 수 — 시간이 지날수록 계속 커짐(평균 학습 4.1, 시험 11.3, 이번 달 14.2). 최근 30 · 90 · 365일 고장 수로 대신함</td></tr><tr><td class="">season</td><td class="">계절 — 넣어도 검증 PR-AUC가 선택 기준(0.005)만큼 좋아지지 않아 뺌</td></tr></tbody></table></div>
+<p><strong>피처 묶음 비교</strong>: 검증 기간에서만 비교함. 더 복잡한 묶음은 검증 PR-AUC가 0.005 이상 좋아질 때만 고름</p>
+<div class="scroll"><table><thead><tr><th class="">피처 묶음</th><th class="n">피처 수</th><th class="n">검증 PR-AUC</th><th class="n">검증 ROC-AUC</th><th class="n">월 20대 적중(6개월 합)</th><th class="">비고</th></tr></thead><tbody><tr><td class="">원본 컬럼</td><td class="n">13</td><td class="n">0.725</td><td class="n">0.875</td><td class="n">38</td><td class=""></td></tr><tr><td class="">원본 + 시간 피처</td><td class="n">19</td><td class="n">0.786</td><td class="n">0.883</td><td class="n">38</td><td class=""></td></tr><tr class="pick"><td class="">원본 + 시간 피처 − 누적 비행시간</td><td class="n">18</td><td class="n">0.789</td><td class="n">0.885</td><td class="n">37</td><td class="">선택</td></tr><tr><td class="">원본 + 시간 피처 + 계절</td><td class="n">20</td><td class="n">0.788</td><td class="n">0.883</td><td class="n">38</td><td class=""></td></tr><tr><td class="">원본 + 시간 피처 + 누적 고장 수</td><td class="n">20</td><td class="n">0.791</td><td class="n">0.887</td><td class="n">38</td><td class="">비교용(선택에서 제외)</td></tr></tbody></table></div>
+<ul><li>선택: 원본 + 시간 피처 − 누적 비행시간 (검증 PR-AUC가 0.005 이상 좋아질 때만 더 복잡한 묶음을 고르는 규칙)</li><li class="src">출처: <code>python scripts/train.py</code> → <code>artifacts/feature_compare.csv</code></li></ul>
+<h2 id="s5"><span class="no">5</span>나눈 기간과 성능</h2>
+<div class="scroll"><table><thead><tr><th class="">용도</th><th class="n">정비일</th><th class="n">건수</th><th class="">비고</th></tr></thead><tbody><tr><td class="">학습(검증용 모델)</td><td class="n">~ 2024-05-31</td><td class="n">1,611건</td><td class="">무작위로 나누지 않고 기간으로 나눔</td></tr><tr><td class="">제외</td><td class="n">2024-06</td><td class="n">92건</td><td class="">정답 확인 구간(30일)이 검증 기간에 걸침</td></tr><tr><td class="">검증</td><td class="n">2024-07-01 ~ 2024-12-31</td><td class="n">643건</td><td class="">위험 표시 기준 · 피처 묶음 선택에 사용</td></tr><tr><td class="">시험 예측용 모델 학습</td><td class="n">2023-01-01 ~ 2024-12-01</td><td class="n">2,223건</td><td class="">12월 2일 이후는 정답이 2025년 기록에 걸쳐 제외</td></tr><tr><td class="">이번 달 예측용 모델 학습</td><td class="n">2023-01-01 ~ 2024-12-31</td><td class="n">2,346건</td><td class="">학습 데이터 전체</td></tr></tbody></table></div>
+<p class="lbl"><strong>검증 기간(2024-07 ~ 12) 성능</strong></p>
+<ul><li>PR-AUC <strong>0.789</strong> (재고장 비율 기준선 0.274), ROC-AUC 0.885</li><li>매달 20대를 골랐을 때 실제 재고장 수(6개월 120대 중): <strong>모델 37대 / 경과연수 오래된 순 18대 / 무작위(기대값) 13.6대</strong></li><li>후보는 달마다 드론별 가장 최근 정비 기록 하나씩이며, 이 가운데 확률이 높은 20대를 고름. 정확도는 보고하지 않음</li></ul>
+<div class="scroll"><table><thead><tr><th class="n">월</th><th class="n">후보(드론)</th><th class="n">선정</th><th class="n">모델 적중</th><th class="n">오래된 순 적중</th><th class="n">무작위(기대값)</th></tr></thead><tbody><tr><td class="n">2024-07</td><td class="n">77</td><td class="n">20</td><td class="n">6</td><td class="n">4</td><td class="n">2.3</td></tr><tr><td class="n">2024-08</td><td class="n">87</td><td class="n">20</td><td class="n">4</td><td class="n">2</td><td class="n">1.6</td></tr><tr><td class="n">2024-09</td><td class="n">79</td><td class="n">20</td><td class="n">10</td><td class="n">6</td><td class="n">3.5</td></tr><tr><td class="n">2024-10</td><td class="n">89</td><td class="n">20</td><td class="n">5</td><td class="n">2</td><td class="n">1.3</td></tr><tr><td class="n">2024-11</td><td class="n">78</td><td class="n">20</td><td class="n">4</td><td class="n">2</td><td class="n">2.1</td></tr><tr><td class="n">2024-12</td><td class="n">87</td><td class="n">20</td><td class="n">8</td><td class="n">2</td><td class="n">2.8</td></tr></tbody></table></div>
+<ul><li class="src">출처: <code>python scripts/train.py</code> → <code>artifacts/validation_by_month.csv</code>, <code>artifacts/model_card.json</code></li></ul>
+<h2 id="s6"><span class="no">6</span>위험 표시 기준</h2>
+<ul><li>검증 기간에서 <strong>‘놓친 재고장 수 × 300 + 기준 이상 건수 × 60’(만원)이 가장 작은 확률 기준</strong>을 고름. 시험 데이터(2025)로 고르지 않음</li></ul>
+<div class="scroll"><table><thead><tr><th class="">놓친 재고장 비용</th><th class="n">고른 기준</th><th class="n">기준 이상 건수</th><th class="n">놓친 재고장</th><th class="n">총 비용(만원)</th></tr></thead><tbody><tr class="pick"><td class="">300만원 (선택)</td><td class="n">0.24</td><td class="n">239</td><td class="n">29</td><td class="n">23,040</td></tr><tr><td class="">600만원 (비교)</td><td class="n">0.10</td><td class="n">368</td><td class="n">12</td><td class="n">29,280</td></tr></tbody></table></div>
+<ul><li>비용을 300 → 600만원으로 올리면 기준이 0.24 → 0.10로 내려가고, 기준 이상이 239 → 368건으로 늘며 놓친 재고장은 29 → 12건으로 줆. 놓치는 비용이 클수록 더 많이 점검하는 쪽으로 기준이 움직임</li><li>비교 정책(검증 643건 중 재고장 176건): 아무도 점검하지 않으면 300만원 기준 52,800만원, 전부 점검하면 38,580만원, 기준 0.24로 고르면 23,040만원</li><li class="src">출처: <code>python scripts/train.py</code> → <code>artifacts/threshold_cost.csv</code>, <code>artifacts/model_card.json</code></li></ul>
+<h2 id="s7"><span class="no">7</span>시험 기간 예측 제출</h2>
+<ul><li><code>reports/test_predictions_2025.csv</code>: drone_test.csv 1,241건 모두에 재고장 확률을 매김(열: equipment_id, maintenance_date, prob). 확률 평균 0.261, 범위 0.025 ~ 0.957</li><li>시험용 모델은 정비일 ≤ 2024-12-01 행으로 학습함. 시험 피처는 학습 기록과 이어서 계산함</li><li><strong>시험(2025) 정답은 없으므로 시험 기간 PR-AUC · 적중 수는 계산하지 못함.</strong> 정답을 기록에서 다시 만들지 않았음. 위 성능은 검증 기간 값이며, 시험 성능은 제출한 확률로 강사가 채점함</li><li class="src">출처: <code>python scripts/train.py</code></li></ul>
+<h2 id="s8"><span class="no">8</span>모델의 한계 (<code>artifacts/model_card.json</code>의 limits)</h2>
+<ul><li>교육용 가상 데이터로 학습했다. 실제 드론에 그대로 쓰지 않는다.</li><li>확률은 '정비 뒤 30일' 기준이다. 정비 기록이 없는 드론은 판단하지 않는다.</li><li>시험(2025) 정답이 없어 시험 성능은 계산하지 못했다. 성능은 검증 기간(2024-07 ~ 12) 기준이다.</li><li>최종 판단은 정비 담당자가 한다. 모델은 점검 순서를 정하는 참고 자료다.</li></ul>
+<ul><li>추가: 이번 달 예측용 모델은 정답이 있는 2024-12까지로 학습함. 정답이 없는 2025년 기록은 학습에 쓰지 못해 2025년의 변화는 반영되지 않음</li><li>추가: 정비를 극단적으로 자주 하는 드론이 있음(DR-0115는 이번 달에만 5회 정비, 확률 96.3%). 이런 드론은 시간 피처 값이 학습 데이터 대부분보다 훨씬 커서 확률이 매우 높게 나올 수 있고, 정비 이력 확인이 필요함</li></ul>
+</article>
+</body>
+</html>

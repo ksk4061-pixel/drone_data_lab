@@ -1,0 +1,6 @@
+# 앱의 강조색(탭 밑줄 · 슬라이더 · 선택 표시). 배경 · 글자색은 Streamlit 기본을 따른다.
+[theme.light]
+primaryColor = "#0d6efd"
+
+[theme.dark]
+primaryColor = "#6ea8fe"

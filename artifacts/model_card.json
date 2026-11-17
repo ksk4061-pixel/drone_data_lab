@@ -1,0 +1,130 @@
+{
+  "model": "LightGBM (drone_lib.make_model)",
+  "target": "정비 뒤 30일 안 재고장(사후 · 긴급정비) 여부",
+  "features": [
+    "equipment_type",
+    "maintenance_type",
+    "fault_category",
+    "equipment_age_years",
+    "severity",
+    "downtime_hours",
+    "repair_duration_hours",
+    "parts_replaced_count",
+    "maintenance_cost",
+    "maintenance_success",
+    "days_since_last_maintenance",
+    "is_first_maintenance",
+    "fail_count_30d",
+    "fail_count_90d",
+    "fail_count_365d",
+    "days_since_last_failure",
+    "hours_since_last_pm",
+    "hours_since_last_maintenance"
+  ],
+  "excluded": {
+    "availability_rate": "그 달 전체 가동률 — 예측 시점에는 알 수 없음(누수). 이번 달 파일에도 없음",
+    "fault_code": "40종 — fault_category로 대신함",
+    "equipment_id · unit_code": "식별자",
+    "maintenance_date": "날짜 자체는 쓰지 않음(시간 피처만 사용)",
+    "cumulative_operating_hours": "누적형 컬럼 — 시간이 지날수록 커져 시험 · 이번 달에서 학습 범위를 벗어남. 빼도 검증 성능 차이 없음(직전 정비 · 예방정비 뒤 비행시간으로 대신함)",
+    "fail_count_total": "누적 고장 수 — 시간이 지날수록 계속 커짐(평균 학습 4.1, 시험 11.3, 이번 달 14.2). 최근 30 · 90 · 365일 고장 수로 대신함",
+    "season": "계절 — 넣어도 검증 PR-AUC가 선택 기준(0.005)만큼 좋아지지 않아 뺌"
+  },
+  "capacity_per_month": 20,
+  "trained_on": "2023-01-01 ~ 2024-12-31 (2,346건) 전체 — 이번 달 예측용",
+  "trained_on_test_model": "2023-01-01 ~ 2024-12-01 (2,223건) — 시험 예측용",
+  "split": {
+    "fit": "~ 2024-05-31 (1,611건)",
+    "valid": "2024-07-01 ~ 2024-12-31 (643건)",
+    "dropped_between": "92건 (2024-06, 정답 구간이 검증 기간에 걸침)"
+  },
+  "threshold": 0.24,
+  "threshold_600": 0.1,
+  "threshold_rule": "검증 기간(2024-07 ~ 12) 비용 최소: 놓친 재고장 300만원, 재점검 60만원",
+  "threshold_detail": {
+    "300": {
+      "threshold": 0.24,
+      "flagged": 239,
+      "missed": 29,
+      "cost_300": 23040
+    },
+    "600": {
+      "threshold": 0.1,
+      "flagged": 368,
+      "missed": 12,
+      "cost_600": 29280
+    },
+    "policy": {
+      "아무도 점검 안 함": {
+        "cost_300": 52800,
+        "cost_600": 105600
+      },
+      "전부 점검": {
+        "cost_300": 38580,
+        "cost_600": 38580
+      }
+    },
+    "valid_rows": 643,
+    "valid_failures": 176
+  },
+  "validation": {
+    "pr_auc": 0.789,
+    "roc_auc": 0.885,
+    "base_rate": 0.274,
+    "hits": {
+      "model": 37,
+      "oldest": 18,
+      "random": 13.6,
+      "picked": 120
+    }
+  },
+  "feature_compare": [
+    {
+      "feature_set": "원본 컬럼",
+      "n_features": 13,
+      "pr_auc": 0.725,
+      "roc_auc": 0.875,
+      "top20_hits": 38,
+      "selectable": true
+    },
+    {
+      "feature_set": "원본 + 시간 피처",
+      "n_features": 19,
+      "pr_auc": 0.786,
+      "roc_auc": 0.883,
+      "top20_hits": 38,
+      "selectable": true
+    },
+    {
+      "feature_set": "원본 + 시간 피처 − 누적 비행시간",
+      "n_features": 18,
+      "pr_auc": 0.789,
+      "roc_auc": 0.885,
+      "top20_hits": 37,
+      "selectable": true
+    },
+    {
+      "feature_set": "원본 + 시간 피처 + 계절",
+      "n_features": 20,
+      "pr_auc": 0.788,
+      "roc_auc": 0.883,
+      "top20_hits": 38,
+      "selectable": true
+    },
+    {
+      "feature_set": "원본 + 시간 피처 + 누적 고장 수",
+      "n_features": 20,
+      "pr_auc": 0.791,
+      "roc_auc": 0.887,
+      "top20_hits": 38,
+      "selectable": false
+    }
+  ],
+  "feature_choice": "원본 + 시간 피처 − 누적 비행시간 (검증 PR-AUC가 0.005 이상 좋아질 때만 더 복잡한 묶음을 고르는 규칙)",
+  "limits": [
+    "교육용 가상 데이터로 학습했다. 실제 드론에 그대로 쓰지 않는다.",
+    "확률은 '정비 뒤 30일' 기준이다. 정비 기록이 없는 드론은 판단하지 않는다.",
+    "시험(2025) 정답이 없어 시험 성능은 계산하지 못했다. 성능은 검증 기간(2024-07 ~ 12) 기준이다.",
+    "최종 판단은 정비 담당자가 한다. 모델은 점검 순서를 정하는 참고 자료다."
+  ]
+}
