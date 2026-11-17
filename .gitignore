@@ -18,6 +18,9 @@ __MACOSX/
 # 학습한 모델 바이너리 (python scripts/train.py 로 다시 만든다)
 *.joblib
 
+# 검증 기간의 드론별 예측값 · 정답 (학습 데이터에서 나온 값. 모델 점검 스크립트가 쓰며 python scripts/train.py 로 다시 만든다)
+artifacts/validation_predictions.csv
+
 # 임시 파일
 *.log
 backup/

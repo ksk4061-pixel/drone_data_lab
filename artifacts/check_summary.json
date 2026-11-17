@@ -1,0 +1,316 @@
+{
+  "n_rows": 643,
+  "b1": [
+    {
+      "item": "PR-AUC",
+      "report": 0.789,
+      "recomputed": 0.789,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "ROC-AUC",
+      "report": 0.885,
+      "recomputed": 0.885,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "월 20대 적중 — 모델(6개월 합)",
+      "report": 37.0,
+      "recomputed": 37.0,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "월 20대 적중 — 오래된 순",
+      "report": 18.0,
+      "recomputed": 18.0,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "월 20대 적중 — 무작위(기대값)",
+      "report": 13.6,
+      "recomputed": 13.6,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "위험 표시 기준(300만원)",
+      "report": 0.24,
+      "recomputed": 0.24,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "위험 표시 기준(600만원)",
+      "report": 0.1,
+      "recomputed": 0.1,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "총 비용 300만원 기준(만원)",
+      "report": 23040.0,
+      "recomputed": 23040.0,
+      "diff": 0.0,
+      "ok": true
+    },
+    {
+      "item": "총 비용 600만원 기준(만원)",
+      "report": 29280.0,
+      "recomputed": 29280.0,
+      "diff": 0.0,
+      "ok": true
+    }
+  ],
+  "rule_pr_auc": 0.775,
+  "rule_roc_auc": 0.865,
+  "b5": {
+    "예방정비 행만": {
+      "rows": 438,
+      "base_rate": 0.116,
+      "roc_auc": 0.786,
+      "pr_auc": 0.437
+    },
+    "사후 · 긴급정비 행만": {
+      "rows": 205,
+      "base_rate": 0.61,
+      "roc_auc": 0.817,
+      "pr_auc": 0.882
+    }
+  },
+  "b6_pooled_pr_auc": 0.798,
+  "checks": [
+    {
+      "id": "B1",
+      "name": "보고서 숫자 재계산 대조",
+      "criterion": "model_card.json 값과 별도 코드로 다시 계산한 값이 일치",
+      "result": "9/9개 일치",
+      "verdict": "통과"
+    },
+    {
+      "id": "B2",
+      "name": "월별 적중(오래된 순 · 무작위와 비교)",
+      "criterion": "모델이 둘 다 이긴 달 6개월 중 5개월 이상",
+      "result": "6개월 중 6개월 · 합계 모델 37 / 오래된 순 18 / 무작위 13.6 / 최대치 56",
+      "verdict": "통과"
+    },
+    {
+      "id": "B3",
+      "name": "단순 규칙과 비교",
+      "criterion": "모델 적중 합계 ≥ 단순 규칙 합계(최근 정비가 사후 · 긴급인 드론, 최근 90일 고장 수 많은 순)",
+      "result": "월 20대 적중 모델 37 / 단순 규칙 39 · 참고: 행 단위 PR-AUC 모델 0.789 / 단순 규칙 0.775",
+      "verdict": "주의"
+    },
+    {
+      "id": "B4",
+      "name": "보정(예측 확률 ↔ 실제 비율)",
+      "criterion": "n 20 이상 구간의 75% 이상이 |실제 − 예측| ≤ 0.10",
+      "result": "8/9개 구간 · 최대 차이 0.122",
+      "verdict": "통과"
+    },
+    {
+      "id": "B5",
+      "name": "부분 집단 점검(누수 · 쉬운 구간만 맞히는지)",
+      "criterion": "예방정비 행만 · 사후/긴급 행만 ROC-AUC ≥ 0.60",
+      "result": "예방정비 행만 ROC-AUC 0.786 · 사후 · 긴급정비 행만 ROC-AUC 0.817",
+      "verdict": "통과"
+    },
+    {
+      "id": "B6",
+      "name": "걸어가며 다시 학습(각 달을 그 이전 데이터로만)",
+      "criterion": "적중 합계가 단일 분할과 5 이내로 같고 오래된 순보다 많음",
+      "result": "걸어가며 38 / 단일 분할 37 / 오래된 순 18 · 전체 PR-AUC 0.798",
+      "verdict": "통과"
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2024-07",
+      "candidates": 77,
+      "failures": 9,
+      "upper_bound": 9,
+      "model": 6,
+      "oldest": 4,
+      "rule": 6,
+      "random": 2.3
+    },
+    {
+      "month": "2024-08",
+      "candidates": 87,
+      "failures": 7,
+      "upper_bound": 7,
+      "model": 4,
+      "oldest": 2,
+      "rule": 5,
+      "random": 1.6
+    },
+    {
+      "month": "2024-09",
+      "candidates": 79,
+      "failures": 14,
+      "upper_bound": 14,
+      "model": 10,
+      "oldest": 6,
+      "rule": 9,
+      "random": 3.5
+    },
+    {
+      "month": "2024-10",
+      "candidates": 89,
+      "failures": 6,
+      "upper_bound": 6,
+      "model": 5,
+      "oldest": 2,
+      "rule": 5,
+      "random": 1.3
+    },
+    {
+      "month": "2024-11",
+      "candidates": 78,
+      "failures": 8,
+      "upper_bound": 8,
+      "model": 4,
+      "oldest": 2,
+      "rule": 5,
+      "random": 2.1
+    },
+    {
+      "month": "2024-12",
+      "candidates": 87,
+      "failures": 12,
+      "upper_bound": 12,
+      "model": 8,
+      "oldest": 2,
+      "rule": 9,
+      "random": 2.8
+    }
+  ],
+  "calibration": [
+    {
+      "bin": "0.0~0.1",
+      "n": 275,
+      "predicted": 0.065,
+      "actual": 0.044,
+      "gap": -0.021
+    },
+    {
+      "bin": "0.1~0.2",
+      "n": 110,
+      "predicted": 0.131,
+      "actual": 0.145,
+      "gap": 0.014
+    },
+    {
+      "bin": "0.2~0.3",
+      "n": 54,
+      "predicted": 0.249,
+      "actual": 0.185,
+      "gap": -0.064
+    },
+    {
+      "bin": "0.3~0.4",
+      "n": 38,
+      "predicted": 0.352,
+      "actual": 0.474,
+      "gap": 0.122
+    },
+    {
+      "bin": "0.4~0.5",
+      "n": 26,
+      "predicted": 0.45,
+      "actual": 0.5,
+      "gap": 0.05
+    },
+    {
+      "bin": "0.5~0.6",
+      "n": 30,
+      "predicted": 0.544,
+      "actual": 0.6,
+      "gap": 0.056
+    },
+    {
+      "bin": "0.6~0.7",
+      "n": 23,
+      "predicted": 0.654,
+      "actual": 0.565,
+      "gap": -0.089
+    },
+    {
+      "bin": "0.7~0.8",
+      "n": 12,
+      "predicted": 0.751,
+      "actual": 0.583,
+      "gap": -0.168
+    },
+    {
+      "bin": "0.8~0.9",
+      "n": 41,
+      "predicted": 0.865,
+      "actual": 0.902,
+      "gap": 0.037
+    },
+    {
+      "bin": "0.9~1.0",
+      "n": 34,
+      "predicted": 0.92,
+      "actual": 0.941,
+      "gap": 0.021
+    }
+  ],
+  "walk_forward": [
+    {
+      "month": "2024-07",
+      "train_rows": 1611,
+      "walk_forward_hits": 6,
+      "single_split_hits": 6,
+      "pr_auc": 0.723
+    },
+    {
+      "month": "2024-08",
+      "train_rows": 1707,
+      "walk_forward_hits": 4,
+      "single_split_hits": 4,
+      "pr_auc": 0.691
+    },
+    {
+      "month": "2024-09",
+      "train_rows": 1802,
+      "walk_forward_hits": 10,
+      "single_split_hits": 10,
+      "pr_auc": 0.793
+    },
+    {
+      "month": "2024-10",
+      "train_rows": 1902,
+      "walk_forward_hits": 5,
+      "single_split_hits": 5,
+      "pr_auc": 0.861
+    },
+    {
+      "month": "2024-11",
+      "train_rows": 2001,
+      "walk_forward_hits": 5,
+      "single_split_hits": 4,
+      "pr_auc": 0.828
+    },
+    {
+      "month": "2024-12",
+      "train_rows": 2117,
+      "walk_forward_hits": 8,
+      "single_split_hits": 8,
+      "pr_auc": 0.87
+    }
+  ],
+  "totals": {
+    "candidates": 497.0,
+    "failures": 56.0,
+    "upper_bound": 56.0,
+    "model": 37.0,
+    "oldest": 18.0,
+    "rule": 39.0,
+    "random": 13.6
+  }
+}

@@ -22,7 +22,10 @@ REPORTS, ART = ROOT / "reports", ROOT / "artifacts"
 SCORE, CARD = REPORTS / "score_2026-01.json", ART / "model_card.json"
 BACK, THR, COMP = ART / "validation_by_month.csv", ART / "threshold_cost.csv", ART / "feature_compare.csv"
 COST_CHECK = 60                                   # 재점검 1대 비용(만원, 교육용 가정)
-REPORT_FILES = {"분석 보고서": "분석보고서", "2026-01 재점검 계획": "2026-01_드론_재점검계획"}   # reports/ 안의 파일 이름(확장자 제외)
+REPORT_FILES = {"분석 보고서": "분석보고서", "2026-01 재점검 계획": "2026-01_드론_재점검계획",
+                "모델 점검 보고서": "모델점검보고서"}          # reports/ 안의 파일 이름(확장자 제외)
+CHECK = ART / "check_summary.json"                # python scripts/check_model.py 의 점검 결과
+chk0 = json.loads(CHECK.read_text(encoding="utf-8")) if CHECK.exists() else None
 # 보고서 HTML을 앱 안에 넣을 때 바깥 여백 · 테두리를 없앤다 (보고서 자체의 디자인은 그대로)
 EMBED_CSS = ("<style>body{background:transparent!important;padding:0 4px!important}"
              ".sheet{border:0!important;max-width:none!important;background:transparent!important;padding:8px 28px 28px!important}</style>")
@@ -185,7 +188,8 @@ def render_inspection(rows, period):
                 st.success(f"{store.delete_result(conn, del_id)}건을 삭제했습니다. 새로고침하면 목록에 반영됩니다.")
 
 
-t1, tI, t2, t3, t4, t5 = st.tabs(["① 재점검 목록", "② 점검 결과", "③ 검증 성능", "④ 위험 표시 기준", "⑤ 보고서", "⑥ 모델 정보"])
+t1, tI, t2, t3, t4, t5, t7 = st.tabs(["① 재점검 목록", "② 점검 결과", "③ 검증 성능", "④ 위험 표시 기준", "⑤ 보고서", "⑥ 모델 정보",
+                                      "⑦ 모델 점검"])
 
 with t1:
     c1, c2, c3 = st.columns(3)
@@ -261,11 +265,17 @@ with t4:
                   delta_color="off", delta_arrow="off")
         k3.metric("위험 표시 기준", f"{thr0:.2f}", "놓친 비용 300만원", delta_color="off", delta_arrow="off")
         k4.metric("비용 600만원일 때", f"{card['threshold_600']:.2f}", delta_color="off", delta_arrow="off")
-    else:
+    elif pick == names[1]:
         k1.metric("재점검 대상", f"{cap0}대")
         k2.metric("위험 높음", f"{score['above_threshold']}대", f"기준 {score['threshold']:.2f} 이상", delta_color="off", delta_arrow="off")
         k3.metric("20대 초과", f"{score['above_threshold_over_capacity']}대", "다음 달 이월 검토", delta_color="off", delta_arrow="off")
         k4.metric("1위", f"{top1['prob'] * 100:.1f}%", top1["equipment_id"], delta_color="off", delta_arrow="off")
+    elif chk0:
+        tt = chk0["totals"]
+        k1.metric("점검 통과", f"{sum(c['verdict'] == '통과' for c in chk0['checks'])} / {len(chk0['checks'])}")
+        k2.metric("월 20대 적중 (모델)", int(tt["model"]), f"최대치 {int(tt['upper_bound'])}", delta_color="off", delta_arrow="off")
+        k3.metric("오래된 순", int(tt["oldest"]), f"무작위 {tt['random']}", delta_color="off", delta_arrow="off")
+        k4.metric("단순 규칙", int(tt["rule"]), "비교용", delta_color="off", delta_arrow="off")
     if html_p.exists():
         st.iframe(html_p.read_text(encoding="utf-8").replace("</head>", EMBED_CSS + "</head>", 1), height=820, alt=f"{pick} 보고서")
     elif md_p.exists():
@@ -288,3 +298,56 @@ with t5:
     st.write("**한계**")
     for lim in card["limits"]:
         st.write("- " + lim)
+
+with t7:
+    picks_p = ART / "check_monthly_picks.csv"
+    if chk0 is None or not picks_p.exists():
+        st.info("점검 결과 파일이 없습니다. `python scripts/check_model.py`를 먼저 실행하세요.")
+    else:
+        st.subheader("B. 과거로 되돌려 채점 (검증 기간 2024-07 ~ 12)")
+        st.caption("시험(2025) 정답이 없어 시험 성능은 점검하지 못했습니다. 이 점검은 모델 · 피처 · 기준을 고치지 않고 결과만 보여 줍니다.")
+        n_ok = sum(c["verdict"] == "통과" for c in chk0["checks"])
+        st.write(f"**종합: 점검 {len(chk0['checks'])}개 중 {n_ok}개 통과**")
+        color = {"통과": "green", "주의": "orange", "실패": "red"}
+        for c in chk0["checks"]:
+            st.markdown(f":{color[c['verdict']]}[●] **{c['id']} {c['name']}** · :{color[c['verdict']]}[{c['verdict']}]  \n{c['result']}")
+            st.caption(f"합격 기준: {c['criterion']}")
+
+        st.divider()
+        st.subheader("달별로 고른 20대 확인")
+        mon = pd.DataFrame(chk0["monthly"])
+        picks = pd.read_csv(picks_p, encoding="utf-8-sig")
+        month = st.selectbox("월 선택", list(mon["month"]))
+        r = mon[mon["month"] == month].iloc[0]
+        m1, m2, m3, m4, m5 = st.columns(5)
+        m1.metric("모델 적중", f"{int(r['model'])}대", help="모델이 고른 20대 중 실제로 30일 안에 재고장 난 드론 수")
+        m2.metric("오래된 순", f"{int(r['oldest'])}대")
+        m3.metric("단순 규칙", f"{int(r['rule'])}대", help="최근 정비가 사후 · 긴급인 드론부터, 최근 90일 고장 수가 많은 순")
+        m4.metric("무작위(기대값)", f"{r['random']}대")
+        m5.metric("달성 가능한 최대", f"{int(r['upper_bound'])}대", help="그달 후보 중 실제 재고장 수와 20 중 작은 값")
+        sel = picks[picks["month"] == month]
+        st.dataframe(pd.DataFrame({"순위": sel["rank"], "드론": sel["equipment_id"], "정비일": sel["maintenance_date"],
+                                   "정비 구분": sel["maintenance_type"], "예측 확률(%)": (sel["prob"] * 100).round(1),
+                                   "실제 30일 안 재고장": sel["failure"].map({1: "O 재고장", 0: "X"})}),
+                     hide_index=True, width="stretch")
+        st.caption(f"후보는 그달 드론별 가장 최근 정비 기록({int(r['candidates'])}대)이며, 이 중 확률이 높은 20대를 보여 줍니다. "
+                   f"그달 실제 재고장은 {int(r['failures'])}대였습니다.")
+
+        st.write("**6개월 비교**")
+        st.bar_chart(mon.rename(columns={"model": "모델", "oldest": "오래된 순", "rule": "단순 규칙", "random": "무작위(기대값)",
+                                         "upper_bound": "최대치"}), x="month", y=["모델", "오래된 순", "단순 규칙", "무작위(기대값)", "최대치"])
+
+        st.divider()
+        st.subheader("예측 확률이 맞는가 (보정)")
+        cal = pd.DataFrame(chk0["calibration"])
+        st.bar_chart(cal.rename(columns={"predicted": "평균 예측", "actual": "실제 비율"}), x="bin", y=["평균 예측", "실제 비율"])
+        st.dataframe(cal.rename(columns={"bin": "예측 확률 구간", "n": "건수", "predicted": "평균 예측", "actual": "실제 비율", "gap": "차이(실제 − 예측)"}),
+                     hide_index=True, width="stretch")
+        st.caption("두 막대가 비슷하면 확률을 믿을 수 있다는 뜻입니다. 건수가 적은 구간(0.7~0.8는 12건)은 차이가 커도 우연일 수 있습니다.")
+
+        st.divider()
+        st.subheader("걸어가며 다시 학습해도 같은가")
+        st.dataframe(pd.DataFrame(chk0["walk_forward"]).rename(columns={
+            "month": "월", "train_rows": "학습 건수", "walk_forward_hits": "걸어가며 적중", "single_split_hits": "단일 분할 적중", "pr_auc": "그달 PR-AUC"}),
+            hide_index=True, width="stretch")
+        st.caption("각 달을 그 이전 데이터로만 학습한 모델로 예측한 결과입니다. 단일 분할(앱의 기본 모델)과 비슷하면 결과가 한 번의 분할 덕분이 아니라는 뜻입니다.")

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모델 점검 보고서 (B안: 과거로 되돌려 채점)</title>
+<style>
+  :root {
+    --page: #f1f1ee; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --grid: #e1e0d9; --axis: #c3c2b7;
+    --ring: rgba(11,11,11,.12); --tint: #edf3fb; --accent: #1f5fae; --code: #eeeeea;
+    --font: "Pretendard", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+      --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --grid: #2c2c2a; --axis: #383835;
+    --ring: rgba(255,255,255,.12); --tint: #1c2735; --accent: #6da7ec; --code: #262624; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.7;
+    word-break: keep-all; overflow-wrap: anywhere;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+  }
+  .sheet { max-width: 960px; margin: 0 auto; background: var(--surface); border: 1px solid var(--ring); border-radius: 4px; padding: 48px 56px 40px; }
+  @media (max-width: 700px) { .sheet { padding: 28px 18px; } }
+  .kicker { font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: .02em; }
+  h1 { margin: 6px 0 16px; font-size: clamp(26px, 4.4vw, 34px); line-height: 1.3; font-weight: 700; text-wrap: balance; }
+  h2 { margin: 40px 0 10px; font-size: 22px; line-height: 1.4; font-weight: 700; padding-top: 8px; border-top: 1px solid var(--axis); }
+  h2 .no { color: var(--accent); margin-right: 8px; }
+  h3 { margin: 26px 0 8px; font-size: 17px; font-weight: 700; }
+  p { margin: 8px 0; }
+  ul { margin: 8px 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  ul.meta { list-style: none; padding: 12px 0; margin: 0; border-top: 1px solid var(--axis); border-bottom: 1px solid var(--grid); font-size: 14px; color: var(--ink2); }
+  ul.meta li { margin: 2px 0; }
+  .src { font-size: 13px; color: var(--ink2); list-style: none; margin-left: -20px; }
+  .lbl { font-weight: 700; margin-top: 18px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: .88em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+  .scroll { overflow-x: auto; margin: 10px 0 14px; border: 1px solid var(--grid); border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 520px; }
+  th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink2); padding: 8px 10px; background: var(--tint); border-bottom: 1px solid var(--axis); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td, th { overflow-wrap: break-word; }                   /* 표 칸: 짧은 단어는 꺾지 않고, 칸보다 긴 단어만 꺾는다 */
+  td.nw { white-space: nowrap; }
+  td:first-child, th:first-child { white-space: nowrap; overflow-wrap: normal; }
+  th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.pick td { background: var(--tint); font-weight: 600; }
+  nav.toc { margin: 18px 0 4px; padding: 12px 16px; background: var(--tint); border-radius: 6px; font-size: 14px; }
+  nav.toc b { display: block; margin-bottom: 4px; color: var(--ink2); font-size: 13px; }
+  nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+  @media (max-width: 700px) { nav.toc ol { columns: 1; } }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; padding: 0; font-size: 11.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sheet { border: 0; padding: 0; max-width: none; }
+    h2 { break-after: avoid; margin-top: 22px; font-size: 15px; }
+    h3 { break-after: avoid; }
+    table { font-size: 10px; min-width: 0; } tr { break-inside: avoid; }
+    .scroll { overflow: visible; } nav.toc { display: none; }
+  }
+</style>
+<script>(function(){try{if(window.parent===window)return;var e=window.parent.document.querySelector('.stApp');if(!e)return;function f(){var m=getComputedStyle(e).backgroundColor.match(/[\d.]+/g);if(!m)return;var l=(.2126*m[0]+.7152*m[1]+.0722*m[2])/255;document.documentElement.setAttribute('data-theme',l<.5?'dark':'light')}f();setInterval(f,1000)}catch(x){}})();</script>
+</head>
+<body>
+<article class="sheet">
+<div class="kicker">모델 점검 · 드론 예측정비</div>
+<h1>모델 점검 보고서 (B안: 과거로 되돌려 채점)</h1>
+<ul class="meta"><li>작성: AI 에이전트 초안 · 검토: 정비 담당자 (검토 전)</li><li>자료: 교육용 가상 데이터. 점검 대상은 검증 기간(2024-07 ~ 12)이며 시험(2025) 정답은 쓰지 않음</li><li>이 점검은 모델 · 피처 · 위험 표시 기준을 고치지 않음. 결과만 보고함</li></ul>
+<nav class="toc" aria-label="목차"><b>목차</b><ol><li><a href="#s1">종합</a></li><li><a href="#s2">점검 기준과 판정</a></li><li><a href="#s3">B1 보고서 숫자 재계산 대조</a></li><li><a href="#s4">B2 · B3 월별 적중</a></li><li><a href="#s5">B4 보정 (예측 확률 ↔ 실제 비율)</a></li><li><a href="#s6">B5 부분 집단</a></li><li><a href="#s7">B6 걸어가며 다시 학습</a></li><li><a href="#s8">한계</a></li><li><a href="#s9">숫자의 출처</a></li></ol></nav>
+<h2 id="s1"><span class="no">1</span>종합</h2>
+<ul><li>점검 6개 중 <strong>5개 통과</strong>, 주의 1개, 실패 0개</li><li>6개월 동안 매달 20대를 골랐을 때 실제 재고장 수: 모델 <strong>37대</strong>, 경과연수 오래된 순 18대, 단순 규칙 39대, 무작위(기대값) 13.6대. 달성 가능한 최대치는 56대</li><li class="src">출처: <code>python scripts/check_model.py</code> → <code>artifacts/check_summary.json</code></li></ul>
+<h2 id="s2"><span class="no">2</span>점검 기준과 판정</h2>
+<p>기준은 결과를 보기 전에 <code>scripts/check_model.py</code> 맨 위에 적어 둔 값임.</p>
+<div class="scroll"><table><thead><tr><th class="">번호</th><th class="">점검</th><th class="">합격 기준</th><th class="">결과</th><th class="">판정</th></tr></thead><tbody><tr><td class="nw">B1</td><td class="nw">보고서 숫자 재계산 대조</td><td class="">model_card.json 값과 별도 코드로 다시 계산한 값이 일치</td><td class="nw">9/9개 일치</td><td class="nw">통과</td></tr><tr><td class="nw">B2</td><td class="">월별 적중(오래된 순 · 무작위와 비교)</td><td class="">모델이 둘 다 이긴 달 6개월 중 5개월 이상</td><td class="">6개월 중 6개월 · 합계 모델 37 / 오래된 순 18 / 무작위 13.6 / 최대치 56</td><td class="nw">통과</td></tr><tr><td class="nw">B3</td><td class="nw">단순 규칙과 비교</td><td class="">모델 적중 합계 ≥ 단순 규칙 합계(최근 정비가 사후 · 긴급인 드론, 최근 90일 고장 수 많은 순)</td><td class="">월 20대 적중 모델 37 / 단순 규칙 39 · 참고: 행 단위 PR-AUC 모델 0.789 / 단순 규칙 0.775</td><td class="nw">주의</td></tr><tr><td class="nw">B4</td><td class="">보정(예측 확률 ↔ 실제 비율)</td><td class="">n 20 이상 구간의 75% 이상이</td><td class="nw">실제 − 예측</td><td class="nw">≤ 0.10</td><td class="">8/9개 구간 · 최대 차이 0.122</td><td class="nw">통과</td></tr><tr><td class="nw">B5</td><td class="">부분 집단 점검(누수 · 쉬운 구간만 맞히는지)</td><td class="">예방정비 행만 · 사후/긴급 행만 ROC-AUC ≥ 0.60</td><td class="">예방정비 행만 ROC-AUC 0.786 · 사후 · 긴급정비 행만 ROC-AUC 0.817</td><td class="nw">통과</td></tr><tr><td class="nw">B6</td><td class="">걸어가며 다시 학습(각 달을 그 이전 데이터로만)</td><td class="">적중 합계가 단일 분할과 5 이내로 같고 오래된 순보다 많음</td><td class="">걸어가며 38 / 단일 분할 37 / 오래된 순 18 · 전체 PR-AUC 0.798</td><td class="nw">통과</td></tr></tbody></table></div>
+<h2 id="s3"><span class="no">3</span>B1 보고서 숫자 재계산 대조</h2>
+<p>저장한 검증 예측값(<code>artifacts/validation_predictions.csv</code>)으로 PR-AUC · 적중 수 · 위험 표시 기준을 별도 코드로 다시 계산해 <code>model_card.json</code>의 값과 비교함.</p>
+<div class="scroll"><table><thead><tr><th class="">항목</th><th class="n">보고서 값</th><th class="n">재계산 값</th><th class="n">차이</th><th class="">일치</th></tr></thead><tbody><tr><td class="nw">PR-AUC</td><td class="n nw">0.789</td><td class="n nw">0.789</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="nw">ROC-AUC</td><td class="n nw">0.885</td><td class="n nw">0.885</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">월 20대 적중 — 모델(6개월 합)</td><td class="n nw">37.0</td><td class="n nw">37.0</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">월 20대 적중 — 오래된 순</td><td class="n nw">18.0</td><td class="n nw">18.0</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">월 20대 적중 — 무작위(기대값)</td><td class="n nw">13.6</td><td class="n nw">13.6</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">위험 표시 기준(300만원)</td><td class="n nw">0.24</td><td class="n nw">0.24</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">위험 표시 기준(600만원)</td><td class="n nw">0.1</td><td class="n nw">0.1</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">총 비용 300만원 기준(만원)</td><td class="n nw">23040.0</td><td class="n nw">23040.0</td><td class="n nw">0.0</td><td class="nw">일치</td></tr><tr><td class="">총 비용 600만원 기준(만원)</td><td class="n nw">29280.0</td><td class="n nw">29280.0</td><td class="n nw">0.0</td><td class="nw">일치</td></tr></tbody></table></div>
+<h2 id="s4"><span class="no">4</span>B2 · B3 월별 적중</h2>
+<p>후보는 달마다 드론별 가장 최근 정비 기록 하나씩이며, 이 가운데 확률이 높은 20대를 고름. '최대치'는 그달 후보 중 실제 재고장 수와 20 중 작은 값임. 단순 규칙은 '최근 정비가 사후 · 긴급정비인 드론부터, 최근 90일 고장 수가 많은 순'으로 고름.</p>
+<div class="scroll"><table><thead><tr><th class="n">월</th><th class="n">후보(드론)</th><th class="n">실제 재고장</th><th class="n">최대치</th><th class="n">모델</th><th class="n">오래된 순</th><th class="n">단순 규칙</th><th class="n">무작위(기대값)</th></tr></thead><tbody><tr><td class="n nw">2024-07</td><td class="n nw">77</td><td class="n nw">9</td><td class="n nw">9</td><td class="n nw">6</td><td class="n nw">4</td><td class="n nw">6</td><td class="n nw">2.3</td></tr><tr><td class="n nw">2024-08</td><td class="n nw">87</td><td class="n nw">7</td><td class="n nw">7</td><td class="n nw">4</td><td class="n nw">2</td><td class="n nw">5</td><td class="n nw">1.6</td></tr><tr><td class="n nw">2024-09</td><td class="n nw">79</td><td class="n nw">14</td><td class="n nw">14</td><td class="n nw">10</td><td class="n nw">6</td><td class="n nw">9</td><td class="n nw">3.5</td></tr><tr><td class="n nw">2024-10</td><td class="n nw">89</td><td class="n nw">6</td><td class="n nw">6</td><td class="n nw">5</td><td class="n nw">2</td><td class="n nw">5</td><td class="n nw">1.3</td></tr><tr><td class="n nw">2024-11</td><td class="n nw">78</td><td class="n nw">8</td><td class="n nw">8</td><td class="n nw">4</td><td class="n nw">2</td><td class="n nw">5</td><td class="n nw">2.1</td></tr><tr><td class="n nw">2024-12</td><td class="n nw">87</td><td class="n nw">12</td><td class="n nw">12</td><td class="n nw">8</td><td class="n nw">2</td><td class="n nw">9</td><td class="n nw">2.8</td></tr></tbody></table></div>
+<ul><li><strong>B3 주의</strong>: 월 20대 적중 합계가 모델 37대, 단순 규칙 39대임. 달별로는 규칙이 앞선 달 3개월, 모델이 앞선 달 1개월, 같은 달 2개월이며 달별 차이는 최대 1대임. 월 표본이 작아 우연일 수 있음</li><li>행 단위로 보면(검증 기간 643건 전체) 모델 PR-AUC 0.789, 단순 규칙 PR-AUC 0.775임. 모델은 ‘확률’을 주므로 위험 표시 기준(비용 계산)에는 모델이 필요하지만, 매달 상위 20대만 고르는 용도에서는 단순 규칙이 비슷한 수준임</li><li>달마다 고른 20대와 O/X는 앱의 ‘⑦ 모델 점검’ 탭에서 볼 수 있음</li></ul>
+<h2 id="s5"><span class="no">5</span>B4 보정 (예측 확률 ↔ 실제 비율)</h2>
+<p>검증 기간 정비 기록 643건을 예측 확률 구간별로 묶어 실제 재고장 비율과 비교함.</p>
+<div class="scroll"><table><thead><tr><th class="n">구간</th><th class="n">건수</th><th class="n">평균 예측</th><th class="n">실제 비율</th><th class="n">차이(실제 − 예측)</th></tr></thead><tbody><tr><td class="n nw">0.0~0.1</td><td class="n nw">275</td><td class="n nw">0.065</td><td class="n nw">0.044</td><td class="n nw">-0.021</td></tr><tr><td class="n nw">0.1~0.2</td><td class="n nw">110</td><td class="n nw">0.131</td><td class="n nw">0.145</td><td class="n nw">+0.014</td></tr><tr><td class="n nw">0.2~0.3</td><td class="n nw">54</td><td class="n nw">0.249</td><td class="n nw">0.185</td><td class="n nw">-0.064</td></tr><tr><td class="n nw">0.3~0.4</td><td class="n nw">38</td><td class="n nw">0.352</td><td class="n nw">0.474</td><td class="n nw">+0.122</td></tr><tr><td class="n nw">0.4~0.5</td><td class="n nw">26</td><td class="n nw">0.450</td><td class="n nw">0.500</td><td class="n nw">+0.050</td></tr><tr><td class="n nw">0.5~0.6</td><td class="n nw">30</td><td class="n nw">0.544</td><td class="n nw">0.600</td><td class="n nw">+0.056</td></tr><tr><td class="n nw">0.6~0.7</td><td class="n nw">23</td><td class="n nw">0.654</td><td class="n nw">0.565</td><td class="n nw">-0.089</td></tr><tr><td class="n nw">0.7~0.8</td><td class="n nw">12</td><td class="n nw">0.751</td><td class="n nw">0.583</td><td class="n nw">-0.168</td></tr><tr><td class="n nw">0.8~0.9</td><td class="n nw">41</td><td class="n nw">0.865</td><td class="n nw">0.902</td><td class="n nw">+0.037</td></tr><tr><td class="n nw">0.9~1.0</td><td class="n nw">34</td><td class="n nw">0.920</td><td class="n nw">0.941</td><td class="n nw">+0.021</td></tr></tbody></table></div>
+<h2 id="s6"><span class="no">6</span>B5 부분 집단</h2>
+<div class="scroll"><table><thead><tr><th class="">집단</th><th class="n">건수</th><th class="n">재고장 비율</th><th class="n">ROC-AUC</th><th class="n">PR-AUC</th></tr></thead><tbody><tr><td class="nw">예방정비 행만</td><td class="n nw">438</td><td class="n nw">0.116</td><td class="n nw">0.786</td><td class="n nw">0.437</td></tr><tr><td class="nw">사후 · 긴급정비 행만</td><td class="n nw">205</td><td class="n nw">0.61</td><td class="n nw">0.817</td><td class="n nw">0.882</td></tr></tbody></table></div>
+<h2 id="s7"><span class="no">7</span>B6 걸어가며 다시 학습</h2>
+<p>각 달을 그 이전(정답 확인 구간 30일 제외) 데이터로만 학습한 모델로 예측한 결과임.</p>
+<div class="scroll"><table><thead><tr><th class="n">월</th><th class="n">학습 건수</th><th class="n">걸어가며 적중</th><th class="n">단일 분할 적중</th><th class="n">그달 PR-AUC</th></tr></thead><tbody><tr><td class="n nw">2024-07</td><td class="n nw">1,611</td><td class="n nw">6</td><td class="n nw">6</td><td class="n nw">0.723</td></tr><tr><td class="n nw">2024-08</td><td class="n nw">1,707</td><td class="n nw">4</td><td class="n nw">4</td><td class="n nw">0.691</td></tr><tr><td class="n nw">2024-09</td><td class="n nw">1,802</td><td class="n nw">10</td><td class="n nw">10</td><td class="n nw">0.793</td></tr><tr><td class="n nw">2024-10</td><td class="n nw">1,902</td><td class="n nw">5</td><td class="n nw">5</td><td class="n nw">0.861</td></tr><tr><td class="n nw">2024-11</td><td class="n nw">2,001</td><td class="n nw">5</td><td class="n nw">4</td><td class="n nw">0.828</td></tr><tr><td class="n nw">2024-12</td><td class="n nw">2,117</td><td class="n nw">8</td><td class="n nw">8</td><td class="n nw">0.87</td></tr></tbody></table></div>
+<ul><li>전체 PR-AUC(여섯 달을 합쳐서): 0.798</li></ul>
+<h2 id="s8"><span class="no">8</span>한계</h2>
+<ul><li>위험 표시 기준과 피처 묶음은 같은 검증 기간에서 골랐으므로 검증 성능은 다소 낙관적일 수 있음. B6은 이 영향을 줄여 보기 위한 점검이지만 피처 묶음 선택은 여전히 같은 기간을 보았음</li><li>시험(2025) 정답이 없어 시험 성능은 점검하지 못함. 시험 성능은 강사의 채점 결과로 확인해야 함</li><li>후보가 달마다 약 80대(검증 기간 평균)이고 20대만 고르므로 월별 적중 수의 표본이 작음(한 달 4 ~ 10대 수준). 한두 대 차이는 우연일 수 있음</li><li>이 점검은 AI 에이전트가 작성한 초안이며 최종 판단은 정비 담당자가 함</li></ul>
+<h2 id="s9"><span class="no">9</span>숫자의 출처</h2>
+<div class="scroll"><table><thead><tr><th class="">항목</th><th class="">출처</th></tr></thead><tbody><tr><td class="nw">검증 예측 · 정답</td><td class=""><code>artifacts/validation_predictions.csv</code> (<code>python scripts/train.py</code>)</td></tr><tr><td class="nw">모든 점검 결과</td><td class=""><code>python scripts/check_model.py</code> → <code>artifacts/check_summary.json</code> · <code>check_*.csv</code></td></tr><tr><td class="nw">보고서 비교 기준값</td><td class=""><code>artifacts/model_card.json</code></td></tr></tbody></table></div>
+</article>
+</body>
+</html>

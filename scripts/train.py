@@ -92,6 +92,11 @@ def main():
     pv = mv.predict_proba(valid[FEATURES])[:, 1]
     ev, back = evaluate(valid, pv)
     back.to_csv(ART / "validation_by_month.csv", index=False, encoding="utf-8-sig")
+    # 모델 점검(scripts/check_model.py)용: 검증 기간의 드론별 예측값과 실제 정답. 학습 데이터에서 나온 값이라 저장소에는 올리지 않는다(.gitignore).
+    vp = valid[["equipment_id", "maintenance_date", "equipment_type", "maintenance_type", "equipment_age_years",
+                "fail_count_90d", "days_since_last_failure"]].assign(prob=pv, failure=valid[TARGET].to_numpy())
+    vp["maintenance_date"] = vp["maintenance_date"].dt.strftime("%Y-%m-%d")
+    vp.to_csv(ART / "validation_predictions.csv", index=False, encoding="utf-8-sig")
     print("\n== 검증 기간 성능 (2024-07 ~ 12) ==")
     print(f"PR-AUC {ev['pr_auc']} (재고장 비율 기준선 {ev['base_rate']}) · ROC-AUC {ev['roc_auc']}")
     print(f"매달 {CAPACITY}대 적중 합계 {ev['hits']['picked']}대 중: 모델 {ev['hits']['model']} / 오래된 순 {ev['hits']['oldest']} / 무작위(기대값) {ev['hits']['random']}")

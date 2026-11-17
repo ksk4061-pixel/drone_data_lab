@@ -181,7 +181,8 @@ def main():
     if len(sys.argv) < 2:
         sys.exit("사용법: python scripts/md_to_html.py reports/분석보고서.md")
     src = Path(sys.argv[1])
-    kicker = "재점검 계획 · 드론 예측정비" if "재점검" in src.name else "분석 보고서 · 드론 예측정비"
+    kicker = ("재점검 계획 · 드론 예측정비" if "재점검" in src.name else
+              "모델 점검 · 드론 예측정비" if "모델점검" in src.name else "분석 보고서 · 드론 예측정비")
     title, body = convert(src.read_text(encoding="utf-8"), kicker)
     page = (f'<!doctype html>\n<html lang="ko">\n<head>\n<meta charset="utf-8">\n'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>{html.escape(title)}</title>\n'

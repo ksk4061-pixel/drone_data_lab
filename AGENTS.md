@@ -15,6 +15,7 @@
 - 데이터 살펴보기: `python scripts/eda.py`
 - 학습 · 검증 · 시험 예측: `python scripts/train.py`
 - 이번 달 재점검 선정: `python scripts/score.py`
+- 모델 점검(B: 과거로 되돌려 채점): `python scripts/check_model.py` — 합격 기준은 스크립트 맨 위에 미리 적어 두며, 결과가 나빠도 모델 · 피처 · 기준을 이 점검에 맞춰 고치지 않고 보고만 한다
 - 보고서 만들기: `python scripts/make_reports.py`
 - 보고서를 HTML로 바꾸기(분석 보고서 · 재점검 계획 각각): `python scripts/md_to_html.py reports/분석보고서.md` — 앱의 보고서 탭이 이 HTML을 읽는다. 보고서를 다시 만든 뒤에는 HTML도 다시 만든다
 
