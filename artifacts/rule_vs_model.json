@@ -1,0 +1,449 @@
+{
+ "period": "2026-01",
+ "capacity": 20,
+ "rule": "최근 정비가 사후 · 긴급정비인 드론을 먼저, 그다음 최근 90일 고장 수가 많은 순, 같으면 경과연수가 높은 순",
+ "both": [
+  "DR-0115",
+  "DR-0038",
+  "DR-0100",
+  "DR-0046",
+  "DR-0018",
+  "DR-0061",
+  "DR-0076",
+  "DR-0052",
+  "DR-0132",
+  "DR-0082",
+  "DR-0074",
+  "DR-0005",
+  "DR-0035",
+  "DR-0002",
+  "DR-0087"
+ ],
+ "n_both": 15,
+ "model_only": [
+  {
+   "equipment_id": "DR-0017",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-06",
+   "date": "2026-01-29",
+   "maintenance_type": "예방정비",
+   "model_rank": 2,
+   "model_prob": 0.8823,
+   "rule_rank": 28,
+   "fail_30d": "3",
+   "fail_90d": "4",
+   "fail_365d": "15",
+   "age": "6.1",
+   "success": "1",
+   "up": [
+    "최근 365일 고장 수(15)",
+    "직전 고장 뒤 경과일(1)",
+    "최근 90일 고장 수(4)"
+   ],
+   "down": [
+    "운용중단 시간(0.6)",
+    "예방정비 뒤 비행시간(0)",
+    "정비 성공 여부(1)"
+   ],
+   "basis": "모델 2위(확률 88.2%), 규칙 28위. 최근 정비가 예방정비라 규칙에서는 뒤로 밀림. 모델은 최근 365일 고장 수(15), 직전 고장 뒤 경과일(1), 최근 90일 고장 수(4)을(를) 근거로 확률을 높게 봄."
+  },
+  {
+   "equipment_id": "DR-0113",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-11",
+   "date": "2026-01-18",
+   "maintenance_type": "사후정비",
+   "model_rank": 8,
+   "model_prob": 0.5048,
+   "rule_rank": 21,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "1",
+   "age": "6.8",
+   "success": "0",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "정비 성공 여부(0)",
+    "예방정비 뒤 비행시간(44.5)"
+   ],
+   "down": [
+    "운용중단 시간(1.6)",
+    "최근 90일 고장 수(1)",
+    "최근 365일 고장 수(1)"
+   ],
+   "basis": "모델 8위(확률 50.5%), 규칙 21위. 최근 90일 고장 1건이라 규칙 21위로 밀림. 모델은 직전 고장 뒤 경과일(0), 정비 성공 여부(0), 예방정비 뒤 비행시간(44.5)을(를) 근거로 확률을 높게 봄."
+  },
+  {
+   "equipment_id": "DR-0102",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-03",
+   "date": "2026-01-16",
+   "maintenance_type": "예방정비",
+   "model_rank": 14,
+   "model_prob": 0.3295,
+   "rule_rank": 41,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "7",
+   "age": "3.6",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(4)",
+    "직전 정비 뒤 경과일(4)",
+    "드론 유형(수송드론)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "운용중단 시간(0.7)",
+    "경과연수(3.6)"
+   ],
+   "basis": "모델 14위(확률 33.0%), 규칙 41위. 최근 정비가 예방정비라 규칙에서는 뒤로 밀림. 모델은 직전 고장 뒤 경과일(4), 직전 정비 뒤 경과일(4), 드론 유형(수송드론)을(를) 근거로 확률을 높게 봄."
+  },
+  {
+   "equipment_id": "DR-0092",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-01",
+   "date": "2026-01-13",
+   "maintenance_type": "사후정비",
+   "model_rank": 15,
+   "model_prob": 0.3217,
+   "rule_rank": 26,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "4",
+   "age": "3.9",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "드론 유형(수송드론)",
+    "정비 비용(236)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "교체 부품 수(5)",
+    "정비 성공 여부(1)"
+   ],
+   "basis": "모델 15위(확률 32.2%), 규칙 26위. 최근 90일 고장 1건이라 규칙 26위로 밀림. 모델은 직전 고장 뒤 경과일(0), 드론 유형(수송드론), 정비 비용(236)을(를) 근거로 확률을 높게 봄."
+  },
+  {
+   "equipment_id": "DR-0101",
+   "equipment_type": "수송드론",
+   "unit_code": "UNIT-03",
+   "date": "2026-01-23",
+   "maintenance_type": "사후정비",
+   "model_rank": 18,
+   "model_prob": 0.3142,
+   "rule_rank": 24,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "2",
+   "age": "4.9",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "드론 유형(수송드론)",
+    "예방정비 뒤 비행시간(62.7)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "최근 365일 고장 수(2)",
+    "교체 부품 수(5)"
+   ],
+   "basis": "모델 18위(확률 31.4%), 규칙 24위. 최근 90일 고장 1건이라 규칙 24위로 밀림. 모델은 직전 고장 뒤 경과일(0), 드론 유형(수송드론), 예방정비 뒤 비행시간(62.7)을(를) 근거로 확률을 높게 봄."
+  }
+ ],
+ "rule_only": [
+  {
+   "equipment_id": "DR-0058",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-09",
+   "date": "2026-01-22",
+   "maintenance_type": "사후정비",
+   "model_rank": 21,
+   "model_prob": 0.3029,
+   "rule_rank": 9,
+   "fail_30d": "1",
+   "fail_90d": "2",
+   "fail_365d": "3",
+   "age": "9",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "운용중단 시간(7.1)",
+    "경과연수(9)"
+   ],
+   "down": [
+    "최근 90일 고장 수(2)",
+    "고장 유형(센서)",
+    "직전 정비 뒤 비행시간(42.3)"
+   ],
+   "basis": "규칙 9위(최근 정비 사후정비, 최근 90일 고장 2건), 모델 21위(확률 30.3%). 모델이 확률을 낮춘 요인: 최근 90일 고장 수(2), 고장 유형(센서), 직전 정비 뒤 비행시간(42.3). 모델이 확률을 올린 요인: 직전 고장 뒤 경과일(0), 운용중단 시간(7.1), 경과연수(9)."
+  },
+  {
+   "equipment_id": "DR-0131",
+   "equipment_type": "교육용드론",
+   "unit_code": "UNIT-07",
+   "date": "2026-01-12",
+   "maintenance_type": "사후정비",
+   "model_rank": 27,
+   "model_prob": 0.2519,
+   "rule_rank": 13,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "1",
+   "age": "9",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "경과연수(9)",
+    "운용중단 시간(16.7)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "최근 365일 고장 수(1)",
+    "드론 유형(교육용드론)"
+   ],
+   "basis": "규칙 13위(최근 정비 사후정비, 최근 90일 고장 1건), 모델 27위(확률 25.2%). 모델이 확률을 낮춘 요인: 최근 90일 고장 수(1), 최근 365일 고장 수(1), 드론 유형(교육용드론). 모델이 확률을 올린 요인: 직전 고장 뒤 경과일(0), 경과연수(9), 운용중단 시간(16.7)."
+  },
+  {
+   "equipment_id": "DR-0083",
+   "equipment_type": "감시드론",
+   "unit_code": "UNIT-04",
+   "date": "2026-01-11",
+   "maintenance_type": "긴급정비",
+   "model_rank": 23,
+   "model_prob": 0.2694,
+   "rule_rank": 14,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "1",
+   "age": "7.7",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "직전 정비 뒤 경과일(5)",
+    "경과연수(7.7)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "최근 365일 고장 수(1)",
+    "고장 유형(통신)"
+   ],
+   "basis": "규칙 14위(최근 정비 긴급정비, 최근 90일 고장 1건), 모델 23위(확률 26.9%). 모델이 확률을 낮춘 요인: 최근 90일 고장 수(1), 최근 365일 고장 수(1), 고장 유형(통신). 모델이 확률을 올린 요인: 직전 고장 뒤 경과일(0), 직전 정비 뒤 경과일(5), 경과연수(7.7)."
+  },
+  {
+   "equipment_id": "DR-0133",
+   "equipment_type": "교육용드론",
+   "unit_code": "UNIT-04",
+   "date": "2026-01-14",
+   "maintenance_type": "긴급정비",
+   "model_rank": 28,
+   "model_prob": 0.2505,
+   "rule_rank": 17,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "5",
+   "age": "7.3",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "운용중단 시간(4.7)",
+    "경과연수(7.3)"
+   ],
+   "down": [
+    "드론 유형(교육용드론)",
+    "최근 90일 고장 수(1)",
+    "고장 유형(통신)"
+   ],
+   "basis": "규칙 17위(최근 정비 긴급정비, 최근 90일 고장 1건), 모델 28위(확률 25.1%). 모델이 확률을 낮춘 요인: 드론 유형(교육용드론), 최근 90일 고장 수(1), 고장 유형(통신). 모델이 확률을 올린 요인: 직전 고장 뒤 경과일(0), 운용중단 시간(4.7), 경과연수(7.3)."
+  },
+  {
+   "equipment_id": "DR-0003",
+   "equipment_type": "정찰드론",
+   "unit_code": "UNIT-01",
+   "date": "2026-01-05",
+   "maintenance_type": "사후정비",
+   "model_rank": 22,
+   "model_prob": 0.292,
+   "rule_rank": 18,
+   "fail_30d": "1",
+   "fail_90d": "1",
+   "fail_365d": "5",
+   "age": "7.1",
+   "success": "1",
+   "up": [
+    "직전 고장 뒤 경과일(0)",
+    "운용중단 시간(11.4)",
+    "예방정비 뒤 비행시간(32.8)"
+   ],
+   "down": [
+    "최근 90일 고장 수(1)",
+    "정비 성공 여부(1)",
+    "교체 부품 수(1)"
+   ],
+   "basis": "규칙 18위(최근 정비 사후정비, 최근 90일 고장 1건), 모델 22위(확률 29.2%). 모델이 확률을 낮춘 요인: 최근 90일 고장 수(1), 정비 성공 여부(1), 교체 부품 수(1). 모델이 확률을 올린 요인: 직전 고장 뒤 경과일(0), 운용중단 시간(11.4), 예방정비 뒤 비행시간(32.8)."
+  }
+ ],
+ "rule_top20": [
+  {
+   "rank": 1,
+   "equipment_id": "DR-0115",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "11",
+   "model_rank": 1,
+   "in_model_top": true
+  },
+  {
+   "rank": 2,
+   "equipment_id": "DR-0038",
+   "maintenance_type": "사후정비",
+   "fail_90d": "5",
+   "model_rank": 3,
+   "in_model_top": true
+  },
+  {
+   "rank": 3,
+   "equipment_id": "DR-0046",
+   "maintenance_type": "사후정비",
+   "fail_90d": "4",
+   "model_rank": 5,
+   "in_model_top": true
+  },
+  {
+   "rank": 4,
+   "equipment_id": "DR-0132",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "3",
+   "model_rank": 11,
+   "in_model_top": true
+  },
+  {
+   "rank": 5,
+   "equipment_id": "DR-0018",
+   "maintenance_type": "사후정비",
+   "fail_90d": "3",
+   "model_rank": 6,
+   "in_model_top": true
+  },
+  {
+   "rank": 6,
+   "equipment_id": "DR-0061",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "3",
+   "model_rank": 7,
+   "in_model_top": true
+  },
+  {
+   "rank": 7,
+   "equipment_id": "DR-0100",
+   "maintenance_type": "사후정비",
+   "fail_90d": "3",
+   "model_rank": 4,
+   "in_model_top": true
+  },
+  {
+   "rank": 8,
+   "equipment_id": "DR-0076",
+   "maintenance_type": "사후정비",
+   "fail_90d": "3",
+   "model_rank": 9,
+   "in_model_top": true
+  },
+  {
+   "rank": 9,
+   "equipment_id": "DR-0058",
+   "maintenance_type": "사후정비",
+   "fail_90d": "2",
+   "model_rank": 21,
+   "in_model_top": false
+  },
+  {
+   "rank": 10,
+   "equipment_id": "DR-0052",
+   "maintenance_type": "사후정비",
+   "fail_90d": "2",
+   "model_rank": 10,
+   "in_model_top": true
+  },
+  {
+   "rank": 11,
+   "equipment_id": "DR-0074",
+   "maintenance_type": "사후정비",
+   "fail_90d": "2",
+   "model_rank": 13,
+   "in_model_top": true
+  },
+  {
+   "rank": 12,
+   "equipment_id": "DR-0035",
+   "maintenance_type": "사후정비",
+   "fail_90d": "2",
+   "model_rank": 17,
+   "in_model_top": true
+  },
+  {
+   "rank": 13,
+   "equipment_id": "DR-0131",
+   "maintenance_type": "사후정비",
+   "fail_90d": "1",
+   "model_rank": 27,
+   "in_model_top": false
+  },
+  {
+   "rank": 14,
+   "equipment_id": "DR-0083",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "1",
+   "model_rank": 23,
+   "in_model_top": false
+  },
+  {
+   "rank": 15,
+   "equipment_id": "DR-0087",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "1",
+   "model_rank": 20,
+   "in_model_top": true
+  },
+  {
+   "rank": 16,
+   "equipment_id": "DR-0002",
+   "maintenance_type": "사후정비",
+   "fail_90d": "1",
+   "model_rank": 19,
+   "in_model_top": true
+  },
+  {
+   "rank": 17,
+   "equipment_id": "DR-0133",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "1",
+   "model_rank": 28,
+   "in_model_top": false
+  },
+  {
+   "rank": 18,
+   "equipment_id": "DR-0003",
+   "maintenance_type": "사후정비",
+   "fail_90d": "1",
+   "model_rank": 22,
+   "in_model_top": false
+  },
+  {
+   "rank": 19,
+   "equipment_id": "DR-0005",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "1",
+   "model_rank": 16,
+   "in_model_top": true
+  },
+  {
+   "rank": 20,
+   "equipment_id": "DR-0082",
+   "maintenance_type": "긴급정비",
+   "fail_90d": "1",
+   "model_rank": 12,
+   "in_model_top": true
+  }
+ ]
+}

@@ -23,7 +23,12 @@ SCORE, CARD = REPORTS / "score_2026-01.json", ART / "model_card.json"
 BACK, THR, COMP = ART / "validation_by_month.csv", ART / "threshold_cost.csv", ART / "feature_compare.csv"
 COST_CHECK = 60                                   # 재점검 1대 비용(만원, 교육용 가정)
 REPORT_FILES = {"분석 보고서": "분석보고서", "2026-01 재점검 계획": "2026-01_드론_재점검계획",
-                "모델 점검 B": "모델점검보고서", "모델 점검 A": "모델점검A보고서"}          # reports/ 안의 파일 이름(확장자 제외)
+                "모델 점검 B": "모델점검보고서", "모델 점검 A": "모델점검A보고서",
+                "DR-0115 정비 이력": "DR-0115_정비이력분석"}          # reports/ 안의 파일 이름(확장자 제외)
+CASE_P = ART / "drone_case_DR-0115.json"                                       # python scripts/analyze_drone.py 의 결과
+case0 = json.loads(CASE_P.read_text(encoding="utf-8")) if CASE_P.exists() else None
+RVP = ART / "rule_vs_model.json"                                               # python scripts/compare_rule.py 의 결과
+rv0 = json.loads(RVP.read_text(encoding="utf-8")) if RVP.exists() else None
 CHECK = ART / "check_summary.json"                # python scripts/check_model.py 의 점검 결과
 chk0 = json.loads(CHECK.read_text(encoding="utf-8")) if CHECK.exists() else None
 CHECK_A, TRACE = ART / "check_features_summary.json", ART / "trace_targets.json"    # python scripts/check_features.py 의 점검 결과
@@ -53,6 +58,12 @@ def load():
 
 score, card, rows, back, thr_tab, comp = load()
 cap0, thr0 = card["capacity_per_month"], float(card["threshold"])
+_last = max(r["maintenance_date"] for r in score["rows"])                    # 시나리오의 가장 늦은 정비일
+_until = dt.date.fromisoformat(_last) + dt.timedelta(days=30)                  # 확률이 유효한 마지막 날(정비 후 30일)
+(st.warning if dt.date.today() > _until else st.info)(
+    f"**기준일 안내** 이 앱은 **2026-01 정비 기록({_last}까지)을 기준으로 한 교육용 시나리오**입니다. 확률은 ‘정비 직후부터 30일 안에 다시 고장 날 확률’이라 "
+    f"{_until} 이후에는 의미가 없고, 오늘({dt.date.today()}) 기준으로는 {'**유효 기간이 지났습니다**' if dt.date.today() > _until else '아직 유효합니다'}. "
+    "점검 결과에 남는 날짜는 입력한 실제 날짜입니다. 실제 운용에서는 최신 정비 기록으로 점수를 다시 매겨야 합니다.")
 
 with st.sidebar:
     st.header("설정")
@@ -66,8 +77,11 @@ rows = rows.assign(재점검=rows["rank"] <= cap, 위험=rows["prob"].ge(thr).ma
 def _save_result(period):
     """저장 버튼 콜백. 화면을 다시 그리기 전에 실행되어 저장 직후의 기록으로 드롭다운 · 현황이 그려진다.
     결과 안내는 session_state['inspect_msg']에 남긴다."""
-    ss, pw = st.session_state, store.write_password()
-    if pw and not hmac.compare_digest(str(ss.get("f_pwd", "")).encode(), pw.encode()):
+    ss, pw, mode = st.session_state, store.write_password(), store.write_mode()
+    if mode == "locked":
+        ss["inspect_msg"] = ("error", "저장이 잠겨 있습니다. Secrets에 write_password를 설정해야 저장할 수 있습니다.")
+        return
+    if mode == "password" and not hmac.compare_digest(str(ss.get("f_pwd", "")).encode(), pw.encode()):
         ss["inspect_msg"] = ("error", "쓰기 비밀번호가 맞지 않습니다.")
         return
     try:
@@ -110,7 +124,7 @@ def render_inspection(rows, period):
              + f"{r['equipment_id']} · {r['equipment_type']} · {r['unit_code']} · 확률 {r['확률(%)']}%"
              for _, r in targets.iterrows()}
     options = sorted(label, key=lambda e: e in visits.index)       # 아직 점검하지 않은 드론을 먼저(각각 순위 순)
-    pw = store.write_password()
+    pw, mode = store.write_password(), store.write_mode()
 
     status.markdown(f":green[●] 저장소: **{store.backend_label()}** · 연결됨 · {period} 기록 {len(rec)}건")
     done = set(rec["equipment_id"]) & set(targets["equipment_id"])
@@ -138,12 +152,15 @@ def render_inspection(rows, period):
         st.caption("개인 이름 · 실제 부대 정보 · 연락처는 입력하지 마세요. 교육용 가상 데이터입니다.")
         if pw:
             st.text_input("쓰기 비밀번호", type="password", key="f_pwd")
-        st.form_submit_button("저장", on_click=_save_result, args=(period,))
+        st.form_submit_button("저장", on_click=_save_result, args=(period,), disabled=(mode == "locked"))
     msg = st.session_state.pop("inspect_msg", None)                # 콜백이 남긴 저장 결과 안내
     if msg:
         (st.success if msg[0] == "success" else st.error)(msg[1])
-    if not pw:
-        st.caption("⚠ 쓰기 비밀번호가 설정되어 있지 않아 누구나 기록할 수 있습니다. 공개 앱이면 Secrets에 `write_password`를 넣으세요.")
+    if mode == "locked":
+        st.warning("🔒 저장 · 삭제가 잠겨 있습니다. 쓰기 비밀번호가 설정되지 않았기 때문입니다. "
+                   "Streamlit Secrets(내 PC는 `.streamlit/secrets.toml`)에 `write_password = \"...\"`를 넣으면 비밀번호를 입력해 저장할 수 있습니다.")
+    elif mode == "open":
+        st.caption("⚠ `allow_open_write`가 켜져 있어 비밀번호 없이 누구나 기록할 수 있습니다. 시험용으로만 쓰고 공개 앱에서는 `write_password`를 설정하세요.")
 
     st.subheader("대상 드론별 점검 현황")
     cnt, lat = rec.groupby("equipment_id").size(), latest.set_index("equipment_id")
@@ -183,8 +200,9 @@ def render_inspection(rows, period):
                               format_func=lambda i: f"{i} · {rec.loc[rec['id'] == i, 'equipment_id'].iloc[0]} · "
                                                     f"{rec.loc[rec['id'] == i, 'result'].iloc[0]}")
         pwd2 = st.text_input("쓰기 비밀번호", type="password", key="del_pw") if pw else ""
-        if st.button("삭제", disabled=not st.checkbox("이 기록을 삭제합니다")):
-            if pw and not hmac.compare_digest(pwd2.encode(), pw.encode()):
+        confirm = st.checkbox("이 기록을 삭제합니다")
+        if st.button("삭제", disabled=(mode == "locked") or not confirm):
+            if mode == "password" and not hmac.compare_digest(pwd2.encode(), pw.encode()):
                 st.error("쓰기 비밀번호가 맞지 않습니다.")
             else:
                 st.success(f"{store.delete_result(conn, del_id)}건을 삭제했습니다. 새로고침하면 목록에 반영됩니다.")
@@ -272,6 +290,11 @@ with t4:
         k2.metric("위험 높음", f"{score['above_threshold']}대", f"기준 {score['threshold']:.2f} 이상", delta_color="off", delta_arrow="off")
         k3.metric("20대 초과", f"{score['above_threshold_over_capacity']}대", "다음 달 이월 검토", delta_color="off", delta_arrow="off")
         k4.metric("1위", f"{top1['prob'] * 100:.1f}%", top1["equipment_id"], delta_color="off", delta_arrow="off")
+    elif pick == names[4] and case0:
+        k1.metric("고장 정비 / 전체 정비", f"{case0['fails']} / {case0['rows']}", f"{case0['fail_ratio'] * 100:.1f}%", delta_color="off", delta_arrow="off")
+        k2.metric("직전 365일 고장 정비", f"{case0['recent365']}건", f"같은 유형 중앙값 {case0['recent365_median_type']:g}건", delta_color="off", delta_arrow="off")
+        k3.metric("고장 뒤 30일 안 재고장", f"{case0['repeat30'] * 100:.1f}%", f"나머지 드론 {case0['repeat30_fleet'] * 100:.1f}%", delta_color="off", delta_arrow="off")
+        k4.metric("고장 간격 중앙값", f"{case0['gap_median']:g}일", f"나머지 드론 {case0['gap_median_fleet']:g}일", delta_color="off", delta_arrow="off")
     elif pick == names[3] and fs0:
         sa = fs0["stats"]
         k1.metric("점검 통과", f"{sum(c['verdict'] == '통과' for c in fs0['checks'])} / {len(fs0['checks'])}")
@@ -359,6 +382,22 @@ with t7:
             "month": "월", "train_rows": "학습 건수", "walk_forward_hits": "걸어가며 적중", "single_split_hits": "단일 분할 적중", "pr_auc": "그달 PR-AUC"}),
             hide_index=True, width="stretch")
         st.caption("각 달을 그 이전 데이터로만 학습한 모델로 예측한 결과입니다. 단일 분할(앱의 기본 모델)과 비슷하면 결과가 한 번의 분할 덕분이 아니라는 뜻입니다.")
+
+        if rv0:
+            st.divider()
+            st.subheader("이번 달 20대: 모델 vs 단순 규칙")
+            st.caption(f"단순 규칙: {rv0['rule']}. 모델이 단순 규칙보다 낫다는 근거는 아직 없습니다(B3 한계). 두 방법이 모두 고른 드론을 먼저 점검하고, 한쪽만 고른 드론은 근거를 보고 정비반장이 정합니다.")
+            g1, g2, g3 = st.columns(3)
+            g1.metric("둘 다 고른 드론", f"{rv0['n_both']}대", help=", ".join(rv0["both"]))
+            g2.metric("모델만 고른 드론", f"{len(rv0['model_only'])}대")
+            g3.metric("규칙만 고른 드론", f"{len(rv0['rule_only'])}대")
+            cols = {"equipment_id": "드론", "model_rank": "모델 순위", "model_prob": "모델 확률", "rule_rank": "규칙 순위",
+                    "maintenance_type": "최근 정비", "fail_90d": "최근 90일 고장", "basis": "판단 근거"}
+            for title, key in (("모델만 고른 드론 (규칙으로는 20위 밖)", "model_only"), ("규칙만 고른 드론 (모델로는 20위 밖)", "rule_only")):
+                st.write(f"**{title}**")
+                tbl = pd.DataFrame(rv0[key])[list(cols)].rename(columns=cols)
+                tbl["모델 확률"] = (tbl["모델 확률"] * 100).round(1).astype(str) + "%"
+                st.dataframe(tbl, hide_index=True, width="stretch")
 
 with t8:
     if fs0 is None or not TRACE.exists():

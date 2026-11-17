@@ -48,6 +48,19 @@ def configured():
     return _url() is not None
 
 
+def write_mode():
+    """저장 · 삭제를 허용하는 방식. 공개 앱에서 누구나 기록을 남기지 못하게 기본값은 잠금이다.
+    'password': 쓰기 비밀번호(write_password)가 설정되어 있고 입력해야 저장 · 삭제함
+    'open'    : 비밀번호 없이 허용. secrets에 allow_open_write = true 를 명시한 경우(내 PC 시험용)에만
+    'locked'  : 둘 다 없음. 저장 · 삭제할 수 없음"""
+    if write_password():
+        return "password"
+    try:
+        return "open" if st.secrets.get("allow_open_write") is True else "locked"
+    except Exception:
+        return "locked"
+
+
 def backend_label():
     """화면에 보여 줄 저장소 이름. 주소 · 사용자 · 비밀번호는 보여 주지 않는다."""
     host = (_url() or "").split("@")[-1]

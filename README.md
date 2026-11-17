@@ -21,6 +21,8 @@ python scripts/train.py          # 학습 · 검증 · 시험 기간 예측
 python scripts/score.py          # 2026-01 재점검 선정
 python scripts/check_model.py    # 모델 점검 B(검증 기간으로 되돌려 채점) → reports/모델점검보고서.md
 python scripts/check_features.py # 모델 점검 A(시간 피처 전수 재계산 · 대상 드론 근거 기록) → reports/모델점검A보고서.md
+python scripts/compare_rule.py   # 이번 달 20대: 모델 vs 단순 규칙 비교 → artifacts/rule_vs_model.json
+python scripts/analyze_drone.py  # 특이 드론(기본 DR-0115)의 정비 이력 분석 → reports/DR-0115_정비이력분석.md
 python scripts/make_reports.py   # 보고서
 python scripts/md_to_html.py reports/분석보고서.md
 python scripts/md_to_html.py reports/2026-01_드론_재점검계획.md   # 앱의 '⑤ 보고서' 탭이 이 HTML을 보여 준다
@@ -49,8 +51,10 @@ share.streamlit.io → **Create app** → **Deploy a public app from GitHub**
 [connections.sql]
 url = "postgresql://postgres.<프로젝트ID>:<비밀번호>@<지역>.pooler.supabase.com:5432/postgres"
 
-# 선택: 공개 앱이면 꼭 넣는다. 넣으면 저장 · 삭제에 이 비밀번호가 필요하다.
+# 필수: 저장 · 삭제는 이 비밀번호를 설정해야만 열린다(없으면 앱이 저장을 잠근다).
 write_password = "<쓰기 비밀번호>"
+# 내 PC 시험용으로만: 비밀번호 없이 허용하려면 아래를 켠다. 공개 앱에서는 쓰지 않는다.
+# allow_open_write = true
 ```
 - 연결 주소와 비밀번호는 `config.toml` · 코드 · 커밋에 쓰지 않는다. Streamlit은 연결 정보를 `secrets.toml`에서만 읽는다.
 - 무료 프로젝트는 1주일 접속이 없으면 멈춘다(데이터는 남는다). 이때 이 탭은 오류 안내를 보여 주고 나머지 탭은 정상 동작한다.

@@ -1,0 +1,99 @@
+{
+ "id": "DR-0115",
+ "type": "수송드론",
+ "unit": "UNIT-02",
+ "rows": 151,
+ "first": "2023-03-28",
+ "last": "2026-01-24",
+ "by_type": {
+  "사후정비": 86,
+  "긴급정비": 48,
+  "예방정비": 17
+ },
+ "fails": 134,
+ "fail_ratio": 0.887,
+ "fleet_fail_ratio_median": 0.182,
+ "fleet_rows_median": 22.0,
+ "recent365": 48,
+ "recent365_pct_all": 100.0,
+ "recent365_pct_type": 100.0,
+ "recent365_median_all": 1.0,
+ "recent365_median_type": 1.0,
+ "age": 6.7,
+ "hours": 2666.2,
+ "category": {
+  "모터": 54,
+  "배터리": 29,
+  "통신": 19,
+  "기체": 18,
+  "센서": 14
+ },
+ "codes_top": {
+  "F011": 10,
+  "F010": 10,
+  "F009": 8,
+  "F012": 6,
+  "F015": 6
+ },
+ "gap_median": 4.0,
+ "gap_median_fleet": 28.0,
+ "gap_le7_share": 0.684,
+ "gap_le7_share_fleet": 0.229,
+ "repeat30": 0.97,
+ "repeat30_fleet": 0.526,
+ "repeat30_success1": 0.959,
+ "repeat30_n": 133,
+ "success_rate": 0.724,
+ "success_rate_fleet": 0.811,
+ "severity": 3.4,
+ "severity_fleet": 2.81,
+ "parts": 376,
+ "repair_h": 1395.1,
+ "downtime_h": 2425.3,
+ "cost": 25183.0,
+ "cost_per_fail": 185.3,
+ "cost_per_fail_fleet": 152.6,
+ "yearly": {
+  "2023": {
+   "예방정비": 4,
+   "사후정비": 12,
+   "긴급정비": 10
+  },
+  "2024": {
+   "예방정비": 6,
+   "사후정비": 38,
+   "긴급정비": 22
+  },
+  "2025": {
+   "예방정비": 6,
+   "사후정비": 33,
+   "긴급정비": 15
+  },
+  "2026": {
+   "예방정비": 1,
+   "사후정비": 3,
+   "긴급정비": 1
+  }
+ },
+ "monthly_fail": {
+  "2025-01": 4,
+  "2025-02": 8,
+  "2025-03": 3,
+  "2025-04": 7,
+  "2025-05": 3,
+  "2025-06": 2,
+  "2025-07": 9,
+  "2025-08": 4,
+  "2025-09": 0,
+  "2025-10": 1,
+  "2025-11": 1,
+  "2025-12": 6,
+  "2026-01": 4
+ },
+ "month_rows_last": 5,
+ "unit_rate": 0.388,
+ "unit_rate_wo": 0.182,
+ "unit_rows": 345,
+ "unit_rows_drone": 92,
+ "train_rate": 0.224
+}

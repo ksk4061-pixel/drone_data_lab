@@ -17,6 +17,8 @@
 - 이번 달 재점검 선정: `python scripts/score.py`
 - 모델 점검(B: 과거로 되돌려 채점): `python scripts/check_model.py` — 합격 기준은 스크립트 맨 위에 미리 적어 두며, 결과가 나빠도 모델 · 피처 · 기준을 이 점검에 맞춰 고치지 않고 보고만 한다
 - 모델 점검(A: 시간 피처를 원본 기록에서 전수 재계산): `python scripts/check_features.py` — 합격 기준을 미리 적어 두고 결과만 보고한다
+- 이번 달 20대를 단순 규칙으로도 뽑아 비교: `python scripts/compare_rule.py` — 모델만 · 규칙만 고른 드론은 한 대씩 근거를 붙인다
+- 특이 드론 정비 이력 분석(근본 원인 중심, 지휘 판단 자료): `python scripts/analyze_drone.py` — 결정(운용 중지 · 창정비 · 도태)은 지휘관이 하며 문서는 건의안이다
 - 보고서 만들기: `python scripts/make_reports.py`
 - 보고서를 HTML로 바꾸기(분석 보고서 · 재점검 계획 각각): `python scripts/md_to_html.py reports/분석보고서.md` — 앱의 보고서 탭이 이 HTML을 읽는다. 보고서를 다시 만든 뒤에는 HTML도 다시 만든다
 
@@ -33,6 +35,8 @@
 - 코드를 고칠 때는 바꿀 파일과 이유를 먼저 말한다.
 - API 키 · 실제 부대 정보 · 개인정보를 파일에 쓰지 않는다.
 - DB 연결 주소 · 비밀번호는 `.streamlit/secrets.toml`(내 PC)과 Streamlit Secrets(배포)에만 쓴다. `config.toml` · 코드 · 커밋 · 채팅에 쓰지 않는다. `secrets.toml`은 `.gitignore`로 막혀 있다.
+- 점검 결과의 저장 · 삭제는 쓰기 비밀번호(`write_password`)가 설정된 경우에만 연다(기본 잠금). DB 기록을 지울 때는 먼저 `backup/`에 내려받고(저장소에는 올리지 않음) 대상 행을 확인한 뒤 지운다.
+- 이 프로젝트의 보고서는 2026-01 정비 기록 기준의 **교육용 시나리오**다. 확률은 정비 후 30일 안의 값이라 시간이 지나면 의미가 없다는 점을 보고서에 밝힌다.
 
 ### 데이터 처리 (`python scripts/eda.py`로 확인한 값)
 - `clean()`은 원본 DataFrame을 바꾸지 않고 새 DataFrame을 돌려준다. 행을 지우지 않는다.

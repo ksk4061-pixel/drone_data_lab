@@ -5,6 +5,7 @@
   artifacts/eda_summary.json · artifacts/model_card.json · artifacts/feature_compare.csv
   artifacts/validation_by_month.csv · artifacts/threshold_cost.csv · reports/score_2026-01.json · reports/test_predictions_2025.csv
 """
+import datetime as dt
 import json
 import re
 import sys
@@ -193,7 +194,7 @@ analysis = f"""# 드론 예측정비 분석 보고서
     ('300만원 (선택)', f"{t3['threshold']:.2f}", num(t3['flagged']), t3['missed'], num(t3['cost_300'])),
     ('600만원 (비교)', f"{t6['threshold']:.2f}", num(t6['flagged']), t6['missed'], num(t6['cost_600']))])}
 
-- 비용을 300 → 600만원으로 올리면 기준이 {t3['threshold']:.2f} → {t6['threshold']:.2f}로 내려가고, 기준 이상이 {num(t3['flagged'])} → {num(t6['flagged'])}건으로 늘며 놓친 재고장은 {t3['missed']} → {t6['missed']}건으로 줆. 놓치는 비용이 클수록 더 많이 점검하는 쪽으로 기준이 움직임
+- 비용을 300 → 600만원으로 올리면 기준이 {t3['threshold']:.2f} → {t6['threshold']:.2f}까지 내려가고, 기준 이상이 {num(t3['flagged'])} → {num(t6['flagged'])}건으로 늘며 놓친 재고장은 {t3['missed']} → {t6['missed']}건으로 줆. 놓치는 비용이 클수록 더 많이 점검하는 쪽으로 기준이 움직임
 - 비교 정책(검증 {num(TD['valid_rows'])}건 중 재고장 {TD['valid_failures']}건): 아무도 점검하지 않으면 300만원 기준 {num(pol['아무도 점검 안 함']['cost_300'])}만원, 전부 점검하면 {num(pol['전부 점검']['cost_300'])}만원, 기준 {t3['threshold']:.2f}로 고르면 {num(t3['cost_300'])}만원
 - 출처: `python scripts/train.py` → `artifacts/threshold_cost.csv`, `artifacts/model_card.json`
 
@@ -206,8 +207,17 @@ analysis = f"""# 드론 예측정비 분석 보고서
 ## 8. 모델의 한계 (`artifacts/model_card.json`의 limits)
 {limits}
 
-- 추가: 이번 달 예측용 모델은 정답이 있는 2024-12까지로 학습함. 정답이 없는 2025년 기록은 학습에 쓰지 못해 2025년의 변화는 반영되지 않음
-- 추가: 정비를 극단적으로 자주 하는 드론이 있음({heavy['equipment_id']}는 이번 달에만 {heavy['month_maintenance_count']}회 정비, 확률 {pct(heavy['prob'])}). 이런 드론은 시간 피처 값이 학습 데이터 대부분보다 훨씬 커서 확률이 매우 높게 나올 수 있고, 정비 이력 확인이 필요함
+- 추가: 이번 달 예측용 모델은 정답이 있는 2024-12까지로 학습함. 정답이 없는 2025년 기록은 학습에 쓰지 못해 2025년의 변화는 반영되지 않음. **이는 교육 과제의 규칙(시험 정답은 강사 보유)에 따른 의도적 제약임**(실제 운용 시 보완 방법은 9절)
+- 추가: 이 분석은 2026-01 정비 기록(교육용 시나리오) 기준이며, 확률은 ‘정비 직후부터 30일 안’의 값이라 시간이 지나면 의미가 없음. 점검 결과의 날짜는 앱을 사용한 실제 날짜라 시나리오 날짜와 다를 수 있음
+- 추가: 정비를 극단적으로 자주 하는 드론이 있음({heavy['equipment_id']}는 이번 달에만 {heavy['month_maintenance_count']}회 정비, 확률 {pct(heavy['prob'])}). 이런 드론은 시간 피처 값이 학습 데이터 대부분보다 훨씬 커서 확률이 매우 높게 나올 수 있고, 정비 이력 확인이 필요함. 상세 분석은 `reports/{heavy['equipment_id']}_정비이력분석.md`
+
+## 9. 실제 운용에서 보완할 점
+1. **2025년 기록으로 다시 학습**: 이 과제에서는 하지 않았으나, 실제 부대에서 쓴다면 2025년 정답을 기록에서 다시 만들어 학습해야 함. 정답의 정의(같은 드론에 정비 뒤 30일 안 사후 · 긴급정비가 있으면 1)는 학습 기록만으로 {lc['match_rate']:.2%} 재현됨(2-3절). 마지막 30일 기록은 정답을 확정할 수 없어 제외하고, 재학습 뒤에는 검증 · 점검(B, A)과 위험 표시 기준 선택을 다시 해야 함
+2. **점수의 유효 기간**: 확률은 정비 후 30일 안의 값이므로 새 정비 기록이 들어올 때마다 점수를 다시 매겨야 함
+3. **비용 가정 교체**: 놓친 재고장 · 재점검 비용을 실제 값(기체 손실, 임무 차질, 2차 피해 포함)으로 바꾸고 위험 표시 기준을 다시 골라야 함(재점검 계획 6절)
+4. **단순 규칙 대비 우위 점검**: 모델이 단순 규칙보다 낫다는 근거가 아직 없으므로(`reports/모델점검보고서.md` B3) 정기적으로 비교해야 함
+5. **점검 결과에 점검 항목 기록**: 반복 고장 기체는 ‘이상 없음’만으로는 판단할 수 없으므로 무엇을 점검했는지 남겨야 함
+6. **극단 이력 기체는 별도 판정**: 정비 횟수가 매우 많은 기체는 모델 확률보다 정비 이력 분석과 지휘 판단이 필요함
 """
 (REPORTS / "분석보고서.md").write_text(analysis, encoding="utf-8")
 
@@ -234,6 +244,55 @@ def advice(r):
 
 
 common = {k: sum(1 for r in top if k in r["reasons"]) for k in ["직전 고장 뒤 경과일(0)", "최근 90일 고장 수", "정비 성공 여부(0)"]}
+
+# ---- 피드백 반영용 자료 (모두 결과 파일에서 읽거나 결과 파일로 다시 계산함)
+RV = json.loads((ART / "rule_vs_model.json").read_text(encoding="utf-8")) if (ART / "rule_vs_model.json").exists() else None
+CASE_P = ART / f"drone_case_{heavy['equipment_id']}.json"
+CASE = json.loads(CASE_P.read_text(encoding="utf-8")) if CASE_P.exists() else None
+COST_CHECK = 60                                                                   # 재점검 1대 비용(만원, README의 가정)
+sens = []                                                                         # 놓친 재고장 비용별 위험 표시 기준 (검증 기간 비용 최소)
+for mc in (100, 200, 300, 450, 600, 800, 1000):
+    cst = THR["missed"] * mc + THR["flagged"] * COST_CHECK
+    i = int(cst.idxmin())
+    thr_i = float(THR.loc[i, "threshold"])
+    sens.append((mc, thr_i, int(THR.loc[i, "flagged"]), int(THR.loc[i, "missed"]), sum(1 for r in rows if r["prob"] >= thr_i)))
+_s = {s[0]: s[1] for s in sens}
+assert abs(_s[300] - C["threshold"]) < 1e-9 and abs(_s[600] - C["threshold_600"]) < 1e-9, "민감도 재계산이 model_card와 다름"
+first_maint, last_maint = min(r["maintenance_date"] for r in rows), max(r["maintenance_date"] for r in rows)
+valid_until = (dt.date.fromisoformat(last_maint) + dt.timedelta(days=30)).isoformat()
+tier_days = lambda p: 3 if p >= 0.7 else 7 if p >= 0.4 else 14                    # 점검 기한 제안(일). 정책 제안값이며 모델이 계산한 값이 아님  # noqa: E731
+sched = {}
+for r in top:
+    sched.setdefault(r["unit_code"], []).append(r)
+sched_rows = [(u, len(l), ", ".join(f"{r['rank']}위 {r['equipment_id']}" for r in l), f"배정 후 {min(tier_days(r['prob']) for r in l)}일 이내", "(정비반장 지정 필요)")
+              for u, l in sorted(sched.items(), key=lambda kv: (min(tier_days(r['prob']) for r in kv[1]), min(r['rank'] for r in kv[1])))]
+rule_in_rest = [r["equipment_id"] for r in rest if RV and r["equipment_id"] in {d["equipment_id"] for d in RV["rule_only"]}]
+
+rv_sec = ""
+if RV:
+    hdr = ['드론', '모델 순위', '모델 확률', '규칙 순위', '최근 정비', '최근 90일 고장', '판단 근거']
+    row_of = lambda d: (d['equipment_id'], d['model_rank'], pct(d['model_prob']), d['rule_rank'], d['maintenance_type'], d['fail_90d'], d['basis'])   # noqa: E731
+    rv_sec = f"""## 4. 단순 규칙으로 뽑은 20대와의 비교
+- 단순 규칙: {RV['rule']}
+- 모델 점검 B3에서 이 규칙이 월 20대 적중에서 모델과 비슷하거나 약간 더 많이 맞혔으므로, 이번 달 20대도 같은 규칙으로 뽑아 모델 목록과 비교함
+- **두 방법이 모두 고른 드론 {RV['n_both']}대**: {', '.join(RV['both'])}
+- 모델만 고른 {len(RV['model_only'])}대와 규칙만 고른 {len(RV['rule_only'])}대는 아래 표에 한 대씩 판단 근거를 적음
+
+**모델만 고른 드론 (규칙으로는 20위 밖)**
+
+{md(hdr, [row_of(d) for d in RV['model_only']])}
+
+**규칙만 고른 드론 (모델로는 20위 밖)**
+
+{md(hdr, [row_of(d) for d in RV['rule_only']])}
+
+- 판단 원칙: 두 방법이 모두 고른 드론을 먼저 점검하고, 한쪽만 고른 드론은 위 근거를 보고 정비반장이 점검 여부를 정함
+- 모델만 고른 드론에는 최근 정비가 예방정비이지만 최근 고장이 잦은 드론이 포함됨. 규칙은 최근 정비 구분을 우선하므로 이런 드론을 뒤로 보냄
+- 이번 달 결과에서도 **모델이 단순 규칙보다 낫다는 근거는 없음**(B3 한계). 모델의 가치는 확률(위험 표시 기준 · 비용 계산)에 있음
+- 출처: `python scripts/compare_rule.py` → `artifacts/rule_vs_model.json`
+
+"""
+
 plan = f"""# 2026-01 드론 재점검 계획 (안)
 
 - 작성: AI 에이전트 초안 · 검토: 정비 담당자 (검토 전)
@@ -242,12 +301,19 @@ plan = f"""# 2026-01 드론 재점검 계획 (안)
 
 ## 1. 요약
 - 2026-01 정비 기록 {num(SC['maintenance_rows'])}건, 드론 {SC['drones']}대 가운데 재점검 대상 **{CAP}대**를 확률 순으로 선정함(월 재점검 가능 대수 기준)
-- 위험 표시 기준({SC['threshold']:.2f}) 이상인 드론은 **{SC['above_threshold']}대**이며, {CAP}대를 넘는 **{SC['above_threshold_over_capacity']}대**는 다음 달로 넘기거나 추가 점검을 검토해야 함
+- 위험 표시 기준({SC['threshold']:.2f}) 이상인 드론은 **{SC['above_threshold']}대**이며, {CAP}대를 넘는 **{SC['above_threshold_over_capacity']}대**는 **추가 점검**으로 처리함(5절). 이 기준은 놓친 재고장 비용 가정에 크게 좌우되므로 6절에서 근거와 한계를 밝힘
+- 모델이 단순 규칙보다 낫다는 근거는 아직 없음. 단순 규칙으로 뽑은 20대와 {RV['n_both'] if RV else '—'}대가 겹치며, 다른 드론은 4절에 한 대씩 근거를 적음
+- {heavy['equipment_id']}는 재점검이 아니라 **지휘 판단 대상**임(8절)
 - 한 드론이 이번 달에 여러 번 정비한 경우({SC['multi_maintenance_drones']}대)는 가장 최근 정비 기록으로 판단함
 - 선정 {CAP}대의 재고장 확률은 {pct(top[-1]['prob'])} ~ {pct(top[0]['prob'])}. 1위 {top[0]['equipment_id']}({pct(top[0]['prob'])})
 - 출처: `python scripts/score.py`
 
-## 2. 재점검 대상 {CAP}대
+## 2. 기준일과 확률의 유효 기간
+- 이 계획은 **2026-01 정비 기록({first_maint} ~ {last_maint})을 기준으로 한 교육용 시나리오**임. 실제 부대의 계획이 아님
+- 모델의 확률은 ‘정비를 마친 직후부터 30일 안에 다시 고장 날 확률’임. 정비일로부터 30일이 지나면(가장 늦은 정비 기준 {valid_until}) 이 확률은 더 이상 의미가 없음
+- 앱의 점검 결과에 남는 날짜는 입력한 실제 날짜이므로 시나리오 날짜(2026-01)와 다를 수 있음. 교육용 시연에서는 그대로 두되, 실제 운용에서는 최신 정비 기록으로 점수를 다시 매겨야 함
+
+## 3. 재점검 대상 {CAP}대
 {md(['순위', '드론', '유형', '부대', '최근 정비일', '정비 구분', '확률', '위험을 올린 요인', '권고'], [
     (r['rank'], r['equipment_id'], r['equipment_type'], r['unit_code'], r['maintenance_date'], r['maintenance_type'],
      pct(r['prob']), r['reasons'], advice(r)) for r in top])}
@@ -256,33 +322,64 @@ plan = f"""# 2026-01 드론 재점검 계획 (안)
 - 괄호 안 숫자는 해당 요인의 실제 값이며, 위험을 올린 요인은 확률 상승에 기여가 큰 3개임
 - 출처: `python scripts/score.py` 출력 표 (`reports/score_2026-01.json`)
 
-## 3. 위험 표시 기준을 넘은 드론과 {CAP}대를 넘는 드론의 처리
-- 위험 표시 기준 {SC['threshold']:.2f} 이상: **{SC['above_threshold']}대** / 선정 {CAP}대 / 선정되지 않은 위험 높음 **{len(rest)}대**
+{rv_sec}## 5. 위험 표시 기준을 넘은 나머지 {len(rest)}대의 처리
+- 위험 표시 기준 {SC['threshold']:.2f} 이상 {SC['above_threshold']}대 중 선정 {CAP}대를 뺀 **{len(rest)}대**(확률 {pct(rest[-1]['prob'])} ~ {pct(rest[0]['prob'])})임
 
 {md(['순위', '드론', '유형', '부대', '확률', '위험을 올린 요인'], [
     (r['rank'], r['equipment_id'], r['equipment_type'], r['unit_code'], pct(r['prob']), r['reasons']) for r in rest])}
 
-**처리 방안(안)**
-1. {CAP}대를 먼저 재점검하고, 선정되지 않은 위험 높음 {len(rest)}대는 다음 달 첫 재점검 후보로 이월함
-2. 재점검 중 여력이 생기면 순위 순서({rest[0]['rank']}위부터)로 추가 점검함
-3. 이월 드론은 다음 정비 기록이 들어오면 점수를 다시 매겨 순위를 갱신함
-4. 놓친 재고장 비용을 600만원으로 보면 위험 표시 기준은 {C['threshold_600']:.2f}로 낮아져 기준 이상이 {n_600}대로 늘어남. 비용 가정이 바뀌면 기준과 대상 수가 함께 바뀜
-- 출처: `reports/score_2026-01.json` 집계, `artifacts/model_card.json`의 `threshold_600`
+**처리 방안(안): 추가 점검** — 선정 {CAP}대의 점검이 끝나는 대로 순위 순서({rest[0]['rank']}위부터)로 같은 달 안에 점검함
+1. 확률이 선정 {CAP}대의 최저({pct(top[-1]['prob'])})와 이어지는 경계 구간이라 순위 차이가 작음
+2. 놓친 재고장 비용을 600만원으로 가정하면 기준이 {C['threshold_600']:.2f}까지 낮아져 이 {len(rest)}대는 기준을 크게 넘음(이번 달 기준 이상 {n_600}대, 6절)
+3. 다음 달로 미루면 정비일로부터 30일이 지나 확률이 의미를 잃고 점수를 다시 매겨야 함(2절)
+4. **비행 제한은 건의하지 않음**: 임무 영향 · 대체 기체 정보가 없음. 운용 영향이 큰 경우의 비행 제한은 지휘관이 판단함
+- 점검 여력이 부족하면 이 {len(rest)}대 중 단순 규칙도 고른 {len(rule_in_rest)}대({', '.join(rule_in_rest) or '없음'})를 먼저 점검함
+- 출처: `reports/score_2026-01.json` · `artifacts/rule_vs_model.json`
 
-## 4. 눈여겨볼 점
+## 6. 비용 가정의 근거와 한계
+- 놓친 재고장 300만원 · 재점검 60만원은 실습 지침(`README.txt`)이 정한 가정이며, 실제 비용에서 나온 값이 아님
+- 드론이 비행 중 추락하면 기체 손실 · 임무 차질 · 2차 피해가 따름. 이는 반영되어 있지 않아 **300만원은 실제보다 낮을 수 있음**
+- 위험 표시 기준은 이 가정에 크게 좌우됨. 아래는 같은 검증 기간(2024-07 ~ 12)에서 비용만 바꿔 다시 계산한 값임(재점검 비용 60만원 고정)
+
+{md(['놓친 재고장 1건 비용(만원)', '위험 표시 기준', '기준 이상 건수(검증)', '놓친 재고장(검증)', '이번 달 기준 이상 드론'], [
+    (s[0] if s[0] not in (300, 600) else f"{s[0]} ({'현재 가정' if s[0] == 300 else '비교'})", f"{s[1]:.2f}", s[2], s[3], f"{s[4]}대") for s in sens])}
+
+- 비용이 클수록 기준이 낮아져 더 많은 드론을 점검 대상으로 봄. 점검 여력(월 {CAP}대)이 고정이면 기준을 낮춘 만큼 점검이 부족해짐
+- 실제 운용에서는 (기체 손실 + 임무 차질 + 2차 피해) 추정값을 정비 · 재정 부서에서 받아 입력해야 함. 앱의 ‘④ 위험 표시 기준’ 탭에서 슬라이더로 바로 다시 계산할 수 있음
+- 출처: `artifacts/threshold_cost.csv`(검증 기간)로 재계산, 300 · 600만원 값은 `artifacts/model_card.json`과 일치함을 확인함
+
+## 7. 점검 일정(제안)과 남은 대상
+- 점검 완료 현황은 앱의 ‘② 점검 결과’ 탭이 실시간으로 보여 줌. 이 문서는 점검 진행 상태를 담지 않음
+- 아래는 재점검 대상 {CAP}대 전체의 점검 기한 **제안**임. 기한은 정책 제안값이며 정비반장이 조정함(확률 70% 이상은 배정 후 3일, 40% 이상은 7일, 그 외는 14일 이내)
+- 인력을 줄이기 위해 부대별로 묶었음. **담당 반은 반 편제 · 인원 정보가 없어 정하지 않았으며** 정비반장이 지정해야 함
+
+{md(['부대', '대상 수', '대상 드론(순위)', '점검 기한(제안)', '담당 반'], sched_rows)}
+
+## 8. 특이 드론: {heavy['equipment_id']} (지휘 판단 대상)
+{(f"- 정비 {CASE['rows']}건 중 고장 정비 {CASE['fails']}건({pct(CASE['fail_ratio'])}), 직전 365일 고장 정비 {CASE['recent365']}건(같은 유형 중앙값 {CASE['recent365_median_type']:g}건)" + chr(10) +
+  f"- 고장 정비 뒤 30일 안 재고장 비율 {pct(CASE['repeat30'])}(나머지 드론 {pct(CASE['repeat30_fleet'])}), 고장 간격 중앙값 {CASE['gap_median']:g}일(나머지 드론 {CASE['gap_median_fleet']:g}일)" + chr(10) +
+  f"- 이번 달 정비 {heavy['month_maintenance_count']}회, 확률 {pct(heavy['prob'])}") if CASE else '- 상세 분석 파일이 없음(`python scripts/analyze_drone.py` 실행 필요)'}
+- 이 드론은 일반적인 ‘재점검’이 아니라 **운용 중지 · 창정비 의뢰 · 도태** 중에서 지휘관이 판단해야 하는 기체임. 근본 원인 분석과 선택지 비교는 `reports/{heavy['equipment_id']}_정비이력분석.md`에 있음
+- 건의안: 운용 중지 후 정밀 진단(창정비 의뢰 검토). 도태는 교체 비용 · 잔존가치 · 대체 기체 정보가 있어야 판단할 수 있음
+- 모델 확률(30일 안 재고장 가능성)과 점검 결과(‘이상 없음’)는 서로 다른 질문이므로 점검에서 이상이 없어도 확률이 낮아지지 않음. 반복 고장 기체는 점검 항목이 증상을 놓쳤을 가능성도 확인해야 함
+
+## 9. 눈여겨볼 점
 - 선정 {CAP}대의 드론 유형: {', '.join(f'{k} {v}대' for k, v in sorted(by_type.items(), key=lambda x: -x[1]))}
 - 2대 이상 선정된 부대: {', '.join(f"{u}({by_unit[u]}대)" for u in multi_units)}. 점검 인력을 묶어서 배정할 때 참고할 수 있음
 - 공통 요인: {CAP}대 중 ‘직전 고장 뒤 경과일(0)’(정비일에 고장 정비)이 위험 요인으로 나타난 드론 {common['직전 고장 뒤 경과일(0)']}대, ‘최근 90일 고장 수’ {common['최근 90일 고장 수']}대, ‘정비 성공 여부(0)’ {common['정비 성공 여부(0)']}대
 - 정비 횟수가 가장 많은 드론은 {heavy['equipment_id']}(이번 달 {heavy['month_maintenance_count']}회 정비, {heavy['rank']}위, 확률 {pct(heavy['prob'])})임. {'최근 365일 고장 수가 위험 요인으로 나타남. ' if '최근 365일 고장 수' in heavy['reasons'] else ''}같은 고장이 반복되는 것이 아닌지 정비 이력 확인이 필요함
 - 집계 값(유형 · 부대 · 공통 요인 대수)은 `reports/score_2026-01.json`의 상위 {CAP}대를 센 값이며 스크립트가 직접 출력한 숫자는 아님
 
-## 5. 모델 성능 요약
+## 10. 모델 성능 요약
 - 검증(2024-07 ~ 12) PR-AUC {V['pr_auc']} (재고장 비율 기준선 {V['base_rate']})
 - 매달 {CAP}대를 골랐을 때 실제 재고장 수(6개월 합): 모델 {V['hits']['model']}대 / 경과연수 오래된 순 {V['hits']['oldest']}대 / 무작위 {V['hits']['random']}대
 - 출처: `artifacts/model_card.json` (`python scripts/train.py`). 자세한 방법은 `reports/분석보고서.md`
 
-## 6. 모델의 한계 (`artifacts/model_card.json`의 limits)
+## 11. 모델의 한계 (`artifacts/model_card.json`의 limits)
 {limits}
+
+- 추가: 이번 달 예측용 모델은 정답이 있는 2024-12까지로 학습함. 2025년 기록은 정답이 없어 쓰지 못함. 이는 교육 과제의 규칙(시험 정답은 강사 보유)에 따른 **의도적 제약**이며, 실제 운용에서는 2025년 기록에서 정답을 재구성해 다시 학습해야 함(분석 보고서 9절)
+- 추가: 이 계획은 2026-01 정비 기록 기준의 교육용 시나리오이며 확률은 정비 후 30일 안의 값이므로 시간이 지나면 의미가 없음(2절)
 """
 (REPORTS / "2026-01_드론_재점검계획.md").write_text(plan, encoding="utf-8")
 
