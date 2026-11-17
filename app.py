@@ -22,6 +22,10 @@ REPORTS, ART = ROOT / "reports", ROOT / "artifacts"
 SCORE, CARD = REPORTS / "score_2026-01.json", ART / "model_card.json"
 BACK, THR, COMP = ART / "validation_by_month.csv", ART / "threshold_cost.csv", ART / "feature_compare.csv"
 COST_CHECK = 60                                   # 재점검 1대 비용(만원, 교육용 가정)
+REPORT_FILES = {"분석 보고서": "분석보고서", "2026-01 재점검 계획": "2026-01_드론_재점검계획"}   # reports/ 안의 파일 이름(확장자 제외)
+# 보고서 HTML을 앱 안에 넣을 때 바깥 여백 · 테두리를 없앤다 (보고서 자체의 디자인은 그대로)
+EMBED_CSS = ("<style>body{background:transparent!important;padding:0 4px!important}"
+             ".sheet{border:0!important;max-width:none!important;background:transparent!important;padding:8px 28px 28px!important}</style>")
 
 st.set_page_config(page_title="드론 예측정비", page_icon="🛠️", layout="wide")
 st.title("🛠️ 드론 예측정비 — 2026-01 재점검 계획")
@@ -57,8 +61,10 @@ rows = rows.assign(재점검=rows["rank"] <= cap, 위험=rows["prob"].ge(thr).ma
 
 def render_inspection(rows, period):
     """재점검 대상의 점검 결과를 Supabase에 기록하고 보여 준다."""
+    status = st.empty()                                            # 저장소 연결 상태 한 줄 (아래에서 채운다)
     st.write("재점검 대상 드론의 점검 결과를 기록합니다. 기록은 **Supabase(Postgres)** 에 저장되어 앱을 다시 시작해도 남습니다.")
     if not store.configured():
+        status.markdown(":gray[●] 저장소: **연결 안 됨** · Secrets에 연결 주소를 넣으면 저장할 수 있습니다")
         st.info("저장소가 연결되어 있지 않습니다. 내 PC는 `.streamlit/secrets.toml`, 배포 앱은 Streamlit Secrets에 "
                 "`[connections.sql]`의 `url`을 넣으세요. 자세한 방법은 README.md에 있습니다.")
         return
@@ -66,6 +72,7 @@ def render_inspection(rows, period):
         conn = store.connect()
         store.init_db()
     except Exception as e:
+        status.markdown(f":red[●] 저장소: **{store.backend_label()} 연결 실패**")
         st.error("점검 결과 저장소(Supabase)에 연결하지 못했습니다. 무료 프로젝트는 1주일 접속이 없으면 멈춥니다. "
                  "Supabase 대시보드에서 다시 켠 뒤 새로고침하세요.")
         st.caption(f"오류 종류: {type(e).__name__}")
@@ -103,6 +110,7 @@ def render_inspection(rows, period):
                 st.error(f"저장하지 못했습니다. ({type(e).__name__})")
 
     rec = store.list_results(conn, period)
+    status.markdown(f":green[●] 저장소: **{store.backend_label()}** · 연결됨 · {period} 기록 {len(rec)}건")
     done = set(rec["equipment_id"]) & set(targets["equipment_id"])
     with top:
         c1, c2, c3 = st.columns(3)
@@ -207,11 +215,34 @@ with t3:
     st.caption("출처: artifacts/threshold_cost.csv (python scripts/train.py). 재점검 비용 60만원은 고정입니다.")
 
 with t4:
-    r1, r2 = st.tabs(["분석 보고서", "2026-01 재점검 계획"])
-    for tab_, name in ((r1, "분석보고서.md"), (r2, "2026-01_드론_재점검계획.md")):
-        with tab_:
-            p = REPORTS / name
-            st.markdown(p.read_text(encoding="utf-8") if p.exists() else f"`{name}` 파일이 없습니다.")
+    names = list(REPORT_FILES)
+    pick = st.segmented_control("보고서 선택", names, default=names[0], label_visibility="collapsed") or names[0]
+    stem = REPORT_FILES[pick]
+    html_p, md_p = REPORTS / f"{stem}.html", REPORTS / f"{stem}.md"
+    v, top1 = card["validation"], score["rows"][0]                 # 핵심 수치는 결과 파일의 값을 그대로 쓴다
+    k1, k2, k3, k4 = st.columns(4)
+    if pick == names[0]:
+        k1.metric("검증 PR-AUC", v["pr_auc"], f"기준선 {v['base_rate']}", delta_color="off", delta_arrow="off")
+        k2.metric("월 20대 적중 (모델)", v["hits"]["model"], f"오래된 순 {v['hits']['oldest']} · 무작위 {v['hits']['random']}",
+                  delta_color="off", delta_arrow="off")
+        k3.metric("위험 표시 기준", f"{thr0:.2f}", "놓친 비용 300만원", delta_color="off", delta_arrow="off")
+        k4.metric("비용 600만원일 때", f"{card['threshold_600']:.2f}", delta_color="off", delta_arrow="off")
+    else:
+        k1.metric("재점검 대상", f"{cap0}대")
+        k2.metric("위험 높음", f"{score['above_threshold']}대", f"기준 {score['threshold']:.2f} 이상", delta_color="off", delta_arrow="off")
+        k3.metric("20대 초과", f"{score['above_threshold_over_capacity']}대", "다음 달 이월 검토", delta_color="off", delta_arrow="off")
+        k4.metric("1위", f"{top1['prob'] * 100:.1f}%", top1["equipment_id"], delta_color="off", delta_arrow="off")
+    if html_p.exists():
+        st.iframe(html_p.read_text(encoding="utf-8").replace("</head>", EMBED_CSS + "</head>", 1), height=820, alt=f"{pick} 보고서")
+    elif md_p.exists():
+        st.markdown(md_p.read_text(encoding="utf-8"))
+    else:
+        st.warning(f"`{stem}` 보고서 파일이 없습니다.")
+    d1, d2, _ = st.columns([1, 1, 4])
+    if html_p.exists():
+        d1.download_button("HTML 받기", html_p.read_bytes(), file_name=html_p.name, mime="text/html")
+    if md_p.exists():
+        d2.download_button("마크다운 받기", md_p.read_bytes(), file_name=md_p.name, mime="text/markdown")
 
 with t5:
     st.write("**예측 대상**:", card["target"])

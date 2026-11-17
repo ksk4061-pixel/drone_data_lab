@@ -16,7 +16,7 @@
 - 학습 · 검증 · 시험 예측: `python scripts/train.py`
 - 이번 달 재점검 선정: `python scripts/score.py`
 - 보고서 만들기: `python scripts/make_reports.py`
-- 보고서를 HTML로 바꾸기: `python scripts/md_to_html.py reports/분석보고서.md`
+- 보고서를 HTML로 바꾸기(분석 보고서 · 재점검 계획 각각): `python scripts/md_to_html.py reports/분석보고서.md` — 앱의 보고서 탭이 이 HTML을 읽는다. 보고서를 다시 만든 뒤에는 HTML도 다시 만든다
 
 ## 고정 약속 (바꾸지 않는다)
 - `drone_lib.py`의 함수 이름 · 인자 · 상수(`FEATURES`, `TARGET` 등)와 위 파일 이름 · 위치는 바꾸지 않는다.

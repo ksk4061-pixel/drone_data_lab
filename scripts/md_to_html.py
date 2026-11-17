@@ -57,6 +57,8 @@ CSS = """
   th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink2); padding: 8px 10px; background: var(--tint); border-bottom: 1px solid var(--axis); white-space: nowrap; }
   td { padding: 8px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
   tr:last-child td { border-bottom: 0; }
+  td, th { overflow-wrap: break-word; }                   /* 표 칸: 짧은 단어는 꺾지 않고, 칸보다 긴 단어만 꺾는다 */
+  td.nw { white-space: nowrap; }
   td:first-child, th:first-child { white-space: nowrap; overflow-wrap: normal; }
   th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
   tr.pick td { background: var(--tint); font-weight: 600; }
@@ -77,6 +79,12 @@ CSS = """
     .scroll { overflow: visible; } nav.toc { display: none; }
   }
 """
+
+# 앱(Streamlit) 안의 iframe에서 열릴 때만 앱의 밝음/어두움 테마를 따라간다. 단독으로 열면 아무 일도 하지 않는다.
+EMBED_JS = ("<script>(function(){try{if(window.parent===window)return;var e=window.parent.document.querySelector('.stApp');"
+            "if(!e)return;function f(){var m=getComputedStyle(e).backgroundColor.match(/[\\d.]+/g);if(!m)return;"
+            "var l=(.2126*m[0]+.7152*m[1]+.0722*m[2])/255;document.documentElement.setAttribute('data-theme',l<.5?'dark':'light')}"
+            "f();setInterval(f,1000)}catch(x){}})();</script>")
 
 NUMERIC = re.compile(r"^[\s\d.,%~+\-−()/건대회개명]*$")
 
@@ -100,13 +108,15 @@ def table_html(rows):
     out.append("</tr></thead><tbody>")
     for r in body:
         pick = any(c == "선택" or c.endswith("(선택)") for c in r)
+        def cls(i, c):                                          # 숫자 열은 오른쪽 정렬, 짧은 칸(번호 · 날짜 · 유형)은 줄바꿈하지 않는다
+            return " ".join(x for x in ("n" if i < len(num) and num[i] else "", "nw" if len(c) <= 14 else "") if x)
         out.append(f'<tr{" class=\"pick\"" if pick else ""}>' + "".join(
-            f'<td class="{"n" if i < len(num) and num[i] else ""}">{inline(c)}</td>' for i, c in enumerate(r)) + "</tr>")
+            f'<td class="{cls(i, c)}">{inline(c)}</td>' for i, c in enumerate(r)) + "</tr>")
     out.append("</tbody></table></div>")
     return "".join(out)
 
 
-def convert(md_text):
+def convert(md_text, kicker="분석 보고서 · 드론 예측정비"):
     lines, out, toc = md_text.splitlines(), [], []
     title, i, sec, in_meta = "", 0, 0, True
     while i < len(lines):
@@ -117,7 +127,7 @@ def convert(md_text):
             continue
         if s.startswith("# "):
             title = s[2:].strip()
-            out.append('<div class="kicker">분석 보고서 · 드론 예측정비</div>')
+            out.append(f'<div class="kicker">{html.escape(kicker)}</div>')
             out.append(f"<h1>{inline(title)}</h1>")
             i += 1
         elif s.startswith("## "):
@@ -171,10 +181,11 @@ def main():
     if len(sys.argv) < 2:
         sys.exit("사용법: python scripts/md_to_html.py reports/분석보고서.md")
     src = Path(sys.argv[1])
-    title, body = convert(src.read_text(encoding="utf-8"))
+    kicker = "재점검 계획 · 드론 예측정비" if "재점검" in src.name else "분석 보고서 · 드론 예측정비"
+    title, body = convert(src.read_text(encoding="utf-8"), kicker)
     page = (f'<!doctype html>\n<html lang="ko">\n<head>\n<meta charset="utf-8">\n'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>{html.escape(title)}</title>\n'
-            f"<style>{CSS}</style>\n</head>\n<body>\n<article class=\"sheet\">\n{body}\n</article>\n</body>\n</html>\n")
+            f"<style>{CSS}</style>\n{EMBED_JS}\n</head>\n<body>\n<article class=\"sheet\">\n{body}\n</article>\n</body>\n</html>\n")
     out = src.with_suffix(".html")
     out.write_text(page, encoding="utf-8")
     print(f"저장: {out}  ({len(page):,}자, 표 {page.count('<table>')}개, 제목 {page.count('<h2')}개)")

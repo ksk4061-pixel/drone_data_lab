@@ -48,6 +48,12 @@ def configured():
     return _url() is not None
 
 
+def backend_label():
+    """화면에 보여 줄 저장소 이름. 주소 · 사용자 · 비밀번호는 보여 주지 않는다."""
+    host = (_url() or "").split("@")[-1]
+    return "Supabase (Postgres)" if "supabase" in host else "Postgres"
+
+
 def write_password():
     try:
         pw = st.secrets.get("write_password")

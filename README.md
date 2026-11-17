@@ -21,6 +21,7 @@ python scripts/train.py          # 학습 · 검증 · 시험 기간 예측
 python scripts/score.py          # 2026-01 재점검 선정
 python scripts/make_reports.py   # 보고서
 python scripts/md_to_html.py reports/분석보고서.md
+python scripts/md_to_html.py reports/2026-01_드론_재점검계획.md   # 앱의 '⑤ 보고서' 탭이 이 HTML을 보여 준다
 ```
 규칙의 원본은 `AGENTS.md`다.
 
